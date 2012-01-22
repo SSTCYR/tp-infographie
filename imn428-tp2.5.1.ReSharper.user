@@ -1,0 +1,32 @@
+<Configuration>
+  <SettingsComponent>
+    <string />
+    <integer />
+    <boolean>
+      <setting name="SolutionAnalysisEnabled">False</setting>
+    </boolean>
+  </SettingsComponent>
+  <RecentFiles>
+    <RecentFiles>
+      <File id="d:Miscellaneous Files/f:GLU.h/l:c!?Program Files (x86)?Microsoft SDKs?Windows?v7.0A?Include?gl?GLU.h" caret="1692" fromTop="0" />
+      <File id="d:Miscellaneous Files/f:GL.h/l:c!?Program Files (x86)?Microsoft SDKs?Windows?v7.0A?Include?gl?GL.h" caret="65610" fromTop="10" />
+      <File id="B5431867-094C-4B8A-A3A5-37D1A6EB21AD/f:imn428-tp2.cpp" caret="4662" fromTop="230" />
+    </RecentFiles>
+    <RecentEdits>
+      <File id="B5431867-094C-4B8A-A3A5-37D1A6EB21AD/f:imn428-tp2.cpp" caret="12291" fromTop="11" />
+      <File id="B5431867-094C-4B8A-A3A5-37D1A6EB21AD/f:imn428-tp2.cpp" caret="10511" fromTop="20" />
+      <File id="B5431867-094C-4B8A-A3A5-37D1A6EB21AD/f:imn428-tp2.cpp" caret="10366" fromTop="15" />
+    </RecentEdits>
+  </RecentFiles>
+  <NAntValidationSettings>
+    <NAntPath value="" />
+  </NAntValidationSettings>
+  <UnitTestRunner>
+    <Providers />
+  </UnitTestRunner>
+  <UnitTestRunnerNUnit>
+    <NUnitInstallDir IsNull="False">
+    </NUnitInstallDir>
+    <UseAddins>Never</UseAddins>
+  </UnitTestRunnerNUnit>
+</Configuration>
