@@ -2,7 +2,7 @@
 
  TP2: Introduction aux transformations 3D sous OpenGL
 
- Nom1: Jean-Philippe Ouellet
+ Nom1: Jean-Philippe Ouellet 11057955
  Nom2: Felix-Antoine Ouellet
  Nom3: Francois Rheault
 
