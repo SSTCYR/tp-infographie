@@ -181,31 +181,45 @@ void DrawAxis()
       les translations et les rotations. Le tetrahedre
       original pointe dans la direction des X positifs.) */
 
-	glBegin( GL_LINES );
+	glLineWidth(4);
+	glBegin(GL_LINES);
 	{
-        glLineWidth (4);
-		
 		glColor3f(1,0,0);
+		glVertex3f(0,0,0);
         glVertex3f(20,0,0);
-		
-        glColor3f(0,1,0);
-        glVertex3f(0,20,0);
+	}
+	glEnd();
 
-        glColor3f(0,0,1);
+	glPushMatrix();
+	glTranslated(20,0,0);
+	DrawTetrahedron();
+	glPopMatrix();
+
+	glBegin(GL_LINES);
+	{
+		glColor3f(0,1,0);
+		glVertex3f(0,0,0);
+        glVertex3f(0,20,0);
+	}
+	glEnd();
+
+	glPushMatrix();
+	glTranslated(0,20,0);
+	glRotated(90, 0, 0, 1);
+	DrawTetrahedron();
+	glPopMatrix();
+
+	glBegin(GL_LINES);
+	{
+		glColor3f(0,0,1);
+		glVertex3f(0,0,0);
         glVertex3f(0,0,20);
 	}
 	glEnd();
 
-	DrawTetrahedron();
-	glTranslated(20,0,0);
-	glPushMatrix();
-
-	DrawTetrahedron();
-	glTranslated(0,20,0);
-	glPushMatrix();
-
-	DrawTetrahedron();
 	glTranslated(0,0,20);
+	glRotated(-90, 0, 1, 0);
+	DrawTetrahedron();
 }
 
 
@@ -221,12 +235,14 @@ void MenuSelection(int value)
         /* AJOUTER DU CODE ICI!
         l'object selectionne est le cube
         */
+		SelectedObject = Cube;
     break;
 
     case Cone:
         /* AJOUTER DU CODE ICI!
         l'object selectionne est le cube
         */
+		SelectedObject = Cone;
     break;
 
     case ActionReset:
@@ -235,6 +251,7 @@ void MenuSelection(int value)
 
         Il faut ici re-initialiser les coordonnees des
         transformations affines. */
+		
     break;
     case ActionQuit:
         exit(0);
@@ -276,11 +293,12 @@ void Display(void)
 
     /* Selectionner la pile de transformations attachee au modele (MODELVIEW) */
 	glMatrixMode(GL_MODELVIEW);
+
     /* Effacer l'ecran */
-	glClearColor(0.0, 0.0, 0.0, 0.0);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
     /* Afficher le cube */
-	DrawCube();
+
     /* Afficher le cone de couleur blanche */
 
     /* Afficher les axes du systeme centres sur l'objet selectionne */
@@ -337,6 +355,7 @@ void MouseMove(int x, int y)
      remplacer la matrice MODELVIEW courante
      par celle du cube ou du cone
      (cubeModelviewMatrix ou coneModelviewMatrix) */
+	glLoadMatrixf(SelectedObject == Cube ? cubeModelviewMatrix : coneModelviewMatrix);
 
     /* AJOUTER DU CODE ICI!
        effectuer les bonnes operations affines. */
