@@ -5,6 +5,7 @@
  Nom1: Jean-Philippe Ouellet 11057955
  Nom2: Felix-Antoine Ouellet
  Nom3: Francois Rheault
+ Nom4: Alexandre Bizeau
 
 */
 
@@ -187,39 +188,36 @@ void DrawAxis()
 		glColor3f(1,0,0);
 		glVertex3f(0,0,0);
         glVertex3f(20,0,0);
-	}
-	glEnd();
 
-	glPushMatrix();
-	glTranslated(20,0,0);
-	DrawTetrahedron();
-	glPopMatrix();
-
-	glBegin(GL_LINES);
-	{
 		glColor3f(0,1,0);
 		glVertex3f(0,0,0);
         glVertex3f(0,20,0);
-	}
-	glEnd();
 
-	glPushMatrix();
-	glTranslated(0,20,0);
-	glRotated(90, 0, 0, 1);
-	DrawTetrahedron();
-	glPopMatrix();
-
-	glBegin(GL_LINES);
-	{
 		glColor3f(0,0,1);
 		glVertex3f(0,0,0);
         glVertex3f(0,0,20);
 	}
 	glEnd();
 
+	glColor3f(1,0,0);
+	glPushMatrix();
+	glTranslated(20,0,0);
+	DrawTetrahedron();
+	glPopMatrix();
+
+	glColor3f(0,1,0);
+	glPushMatrix();
+	glTranslated(0,20,0);
+	glRotated(90, 0, 0, 1);
+	DrawTetrahedron();
+	glPopMatrix();
+
+	glColor3f(0,0,1);
+	glPushMatrix();
 	glTranslated(0,0,20);
 	glRotated(-90, 0, 1, 0);
 	DrawTetrahedron();
+	glPopMatrix();
 }
 
 
@@ -298,8 +296,10 @@ void Display(void)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
     /* Afficher le cube */
+	DrawCube();
 
     /* Afficher le cone de couleur blanche */
+
 
     /* Afficher les axes du systeme centres sur l'objet selectionne */
 	DrawAxis();
