@@ -3,9 +3,9 @@
  TP2: Introduction aux transformations 3D sous OpenGL
 
  Nom1: Jean-Philippe Ouellet 11057955
- Nom2: Felix-Antoine Ouellet 
- Nom3: Francois Rheault 
- Nom4: Alexandre Bizeau 
+ Nom2: Felix-Antoine Ouellet 09137551
+ Nom3: Francois Rheault 11041348
+ Nom4: Alexandre Bizeau 111099837
 
 */
 
