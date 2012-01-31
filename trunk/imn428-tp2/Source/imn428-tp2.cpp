@@ -3,9 +3,9 @@
  TP2: Introduction aux transformations 3D sous OpenGL
 
  Nom1: Jean-Philippe Ouellet 11057955
- Nom2: Felix-Antoine Ouellet
- Nom3: Francois Rheault
- Nom4: Alexandre Bizeau
+ Nom2: Felix-Antoine Ouellet 
+ Nom3: Francois Rheault 
+ Nom4: Alexandre Bizeau 
 
 */
 
@@ -245,10 +245,13 @@ void MenuSelection(int value)
 
     case ActionReset:
 
-        /* AJOUTER DU CODE ICI!
+        /*
 
         Il faut ici re-initialiser les coordonnees des
         transformations affines. */
+		initTransformations();
+		glutPostRedisplay();
+
 		
     break;
     case ActionQuit:
@@ -357,6 +360,10 @@ void MouseMove(int x, int y)
         scale *= -0.01;
     scale+=1;
 
+	float shearMatrixX[] = {1, shear, shear, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1};
+	float shearMatrixY[] = {1, 0, 0, 0, shear, 1, shear, 0, 0, 0, 1, 0, 0, 0, 0, 1};
+	float shearMatrixZ[] = {1, 0, 0, 0, 0, 1, 0, 0, shear, shear, 1, 0, 0, 0, 0, 1};
+
     glMatrixMode(GL_MODELVIEW);
 
     /*  AJOUTER DU CODE ICI!
@@ -392,40 +399,50 @@ void MouseMove(int x, int y)
 
         case ModeRotateX:
         /* Effectuer une rotation relative a l'axe X */
+			glRotatef(rotate,1,0,0);
         break;
 
         case ModeRotateY:
-        /* Effectuer une rotation relative a l'axe X */
+        /* Effectuer une rotation relative a l'axe Y */
+			glRotatef(rotate,0,1,0);
         break;
 
         case ModeRotateZ:
         /* Effectuer une rotation relative a l'axe Z */
+			glRotatef(rotate,0,0,1);
         break;
 
         case ModeScaleX:
         /* Effectuer un changement d'echelle relatif a l'axe X */
+			glScalef(scale,1,1);
         break;
 
         case ModeScaleY:
         /* Effectuer un changement d'echelle relatif a l'axe Y */
+			glScalef(1,scale,1);
         break;
 
         case ModeScaleZ:
         /* Effectuer un changement d'echelle relatif a l'axe Z */
+			glScalef(1,1,scale);
         break;
 
         case ModeScaleU:
         /* Effectuer un changement d'echelle uniforme */
+			glScalef(scale,scale,scale);
         break;
 
         case ModeShearX:
         /* Effectuer un cisaillement relatif a l'axe X */
+			glMultMatrixf(shearMatrixX);
         break;
         case ModeShearY:
         /* Effectuer un cisaillement relatif a l'axe Y */
+			glMultMatrixf(shearMatrixY);
         break;
         case ModeShearZ:
         /* Effectuer un cisaillement relatif a l'axe Z */
+			glMultMatrixf(shearMatrixZ);
         break;
     }
 
