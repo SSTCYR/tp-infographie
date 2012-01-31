@@ -214,7 +214,6 @@ void DrawAxis()
 
 	glColor3f(0,0,1);
 	glPushMatrix();
-	glPushMatrix();
 	glTranslated(0,0,20);
 	glRotated(-90, 0, 1, 0);
 	DrawTetrahedron();
@@ -231,15 +230,15 @@ void MenuSelection(int value)
     switch(value){
 
     case Cube:
-        /* AJOUTER DU CODE ICI!
+        /*
         l'object selectionne est le cube
         */
 		SelectedObject = Cube;
     break;
 
     case Cone:
-        /* AJOUTER DU CODE ICI!
-        l'object selectionne est le cube
+        /*
+        l'object selectionne est le cone
         */
 		SelectedObject = Cone;
     break;
@@ -250,7 +249,6 @@ void MenuSelection(int value)
 
         Il faut ici re-initialiser les coordonnees des
         transformations affines. */
-		Display();
 		
     break;
     case ActionQuit:
@@ -298,12 +296,20 @@ void Display(void)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
     /* Afficher le cube */
+	
+	glLoadMatrixf(cubeModelviewMatrix);
 	DrawCube();
+	
 
     /* Afficher le cone de couleur blanche */
 
+	glLoadMatrixf(coneModelviewMatrix);
+	glColor3f(1,1,1);
+	glutSolidCone(5.,10.,20,10);
+	
 
     /* Afficher les axes du systeme centres sur l'objet selectionne */
+	glLoadMatrixf(SelectedObject == Cube ? cubeModelviewMatrix : coneModelviewMatrix);
 	DrawAxis();
 
     glutSwapBuffers();
@@ -365,14 +371,23 @@ void MouseMove(int x, int y)
     {
         case ModeTranslateX:
         /* Effectuer une translation en X */
+		
+		glTranslatef(translate,0,0);
+
         break;
 
         case ModeTranslateY:
         /* Effectuer une translation en Y */
+		
+		glTranslatef(0,translate,0);
+		
         break;
 
         case ModeTranslateZ:
         /* Effectuer une translation en Z */
+		
+		glTranslatef(0,0,translate);
+		
         break;
 
         case ModeRotateX:
@@ -402,6 +417,7 @@ void MouseMove(int x, int y)
         case ModeScaleU:
         /* Effectuer un changement d'echelle uniforme */
         break;
+
         case ModeShearX:
         /* Effectuer un cisaillement relatif a l'axe X */
         break;
@@ -417,7 +433,7 @@ void MouseMove(int x, int y)
      copier la matrice MODELVIEW courante dans
      le buffer du cube ou du cone
      (cubeModelviewMatrix ou coneModelviewMatrix)  */
-	
+	glGetFloatv(GL_MODELVIEW_MATRIX,SelectedObject == Cube ? cubeModelviewMatrix : coneModelviewMatrix);
 
 
     glutPostRedisplay();
@@ -439,6 +455,7 @@ void keyboard( unsigned char key, int x, int y )
         case 'P':
         if(SelectedObject == Cube)
         {
+			printf("Cube");
             printf("%f %f %f %f\n",cubeModelviewMatrix[0],cubeModelviewMatrix[4],cubeModelviewMatrix[8],cubeModelviewMatrix[12]);
             printf("%f %f %f %f\n",cubeModelviewMatrix[1],cubeModelviewMatrix[5],cubeModelviewMatrix[9],cubeModelviewMatrix[13]);
             printf("%f %f %f %f\n",cubeModelviewMatrix[2],cubeModelviewMatrix[6],cubeModelviewMatrix[10],cubeModelviewMatrix[14]);
@@ -446,6 +463,7 @@ void keyboard( unsigned char key, int x, int y )
         }
         else
         {
+			printf("Cone");
             printf("%f %f %f %f\n",coneModelviewMatrix[0],coneModelviewMatrix[4],coneModelviewMatrix[8],coneModelviewMatrix[12]);
             printf("%f %f %f %f\n",coneModelviewMatrix[1],coneModelviewMatrix[5],coneModelviewMatrix[9],coneModelviewMatrix[13]);
             printf("%f %f %f %f\n",coneModelviewMatrix[2],coneModelviewMatrix[6],coneModelviewMatrix[10],coneModelviewMatrix[14]);
