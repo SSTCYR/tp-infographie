@@ -214,6 +214,7 @@ void DrawAxis()
 
 	glColor3f(0,0,1);
 	glPushMatrix();
+	glPushMatrix();
 	glTranslated(0,0,20);
 	glRotated(-90, 0, 1, 0);
 	DrawTetrahedron();
@@ -249,6 +250,7 @@ void MenuSelection(int value)
 
         Il faut ici re-initialiser les coordonnees des
         transformations affines. */
+		Display();
 		
     break;
     case ActionQuit:
@@ -415,7 +417,7 @@ void MouseMove(int x, int y)
      copier la matrice MODELVIEW courante dans
      le buffer du cube ou du cone
      (cubeModelviewMatrix ou coneModelviewMatrix)  */
-
+	
 
 
     glutPostRedisplay();
