@@ -199,9 +199,9 @@ void drawPlane( int n , bool displayNormals)
 	glBegin(GL_QUADS);
 	{
 		int increment = 200/n;
-		for(int i = 0; i < 100; i+increment)
+		for(int i = 0; i < 100; i+=increment)
 		{
-		    for(int j = 0; j < 100; j+increment)
+		    for(int j = 0; j < 100; j+=increment)
 			{
 				glVertex3f(j, -100, i);
 				glVertex3f(j+increment, -100, i);
@@ -277,7 +277,7 @@ void drawObject()
 			break;
 		case ActionTeapot:
 			glFrontFace( GL_CW );
-
+			glutSolidTeapot(50);
 			glFrontFace( GL_CCW );
 			break;
 
@@ -334,11 +334,16 @@ void displayViewerWindow()
 	setCamera();
 
 	/* Afficher les lumieres */
+	//setLighting();
+	//drawLights();
 
     /* Afficher le plan avec le gMaterials[0] */
+	setMaterial(gMaterials[0]);
 	//drawPlane(4, false);
 
     /* Afficher l'objet avec le gMaterials[1] */
+	setMaterial(gMaterials[1]);
+	//drawObject();
 
 	glutSwapBuffers();
 
@@ -376,18 +381,14 @@ void displayModelerWindow(void)
  	** et l'axe central blanc (de -250 a 250). 
  	**
  	**/
-	glPushMatrix();
 	glBegin(GL_LINE);
+	for(int i = 0; i < NB_MAX_POINTS; i++)
 	{
-		for(int i = 0; i < NB_MAX_POINTS; i++)
-		{
-			glColor3f(0.0, 1.0, 0.0);
-			glVertex2f(silhouettePointArray[i].x, silhouettePointArray[i].y);
-			glColor3f(1.0, 0.0, 0.0);
-		}
+		glColor3f(0.0, 1.0, 0.0);
+		glVertex2f(silhouettePointArray[i].x, silhouettePointArray[i].y);
+		glColor3f(1.0, 0.0, 0.0);
 	}
 	glEnd();
-	glPopMatrix();
 
     glutSwapBuffers();
 }
@@ -404,6 +405,10 @@ void setLighting( const Light& light )
 	** Cette fonction doit fixer les parametres de lumiere
 	** sous OpenGL (glLightf[v])
 	*/
+	glLightfv(light.lightID, GL_AMBIENT, light.ambient);
+	glLightfv(light.lightID, GL_DIFFUSE, light.diffuse);
+	glLightfv(light.lightID, GL_SPECULAR, light.specular);
+	glLightfv(light.lightID, GL_POSITION, light.position);
 }
 
 /*
@@ -418,7 +423,10 @@ void setMaterial( const Material& mat )
     ** (glMaterialf[v])
     **
 	*/
-
+	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, mat.ambient);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, mat.diffuse);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, mat.specular);
+	glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, mat.shininess);
 }
 
 /*
@@ -510,6 +518,9 @@ void keyboard( unsigned char key, int /* x */, int /* y */ )
             ** Activer/deactiver l'illumination
             **
             */
+			if (glIsEnabled(GL_LIGHTING))
+			    glDisable(GL_LIGHTING);
+			else glDisable(GL_LIGHTING);
 		break;
 
         case 'n': /* afficher les normales */
