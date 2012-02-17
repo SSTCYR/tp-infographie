@@ -194,6 +194,24 @@ void drawPlane( int n , bool displayNormals)
 	** Utilisez gMaterials[0].diffuse comme couleur (glColor4fv)
 	**
 	*/
+	glColor4fv(gMaterials[0].diffuse);
+	glPushMatrix();
+	glBegin(GL_QUADS);
+	{
+		int increment = 200/n;
+		for(int i = 0; i < 100; i+increment)
+		{
+		    for(int j = 0; j < 100; j+increment)
+			{
+				glVertex3f(j, -100, i);
+				glVertex3f(j+increment, -100, i);
+				glVertex3f(j, -100, i+increment);
+				glVertex3f(j+increment, -100, i+increment);
+			}
+		}
+	}
+	glEnd();
+	glPopMatrix();
 }
 
 
@@ -308,12 +326,17 @@ void displayViewerWindow()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
 	/* Configurer une camera (projection perspective) */
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	gluPerspective(gCam.fovy, gCam.ratio, gCam.znear, gCam.zfar);
 
     /* Positionner la camera */
+	setCamera();
 
 	/* Afficher les lumieres */
 
     /* Afficher le plan avec le gMaterials[0] */
+	//drawPlane(4, false);
 
     /* Afficher l'objet avec le gMaterials[1] */
 
@@ -353,7 +376,18 @@ void displayModelerWindow(void)
  	** et l'axe central blanc (de -250 a 250). 
  	**
  	**/
-
+	glPushMatrix();
+	glBegin(GL_LINE);
+	{
+		for(int i = 0; i < NB_MAX_POINTS; i++)
+		{
+			glColor3f(0.0, 1.0, 0.0);
+			glVertex2f(silhouettePointArray[i].x, silhouettePointArray[i].y);
+			glColor3f(1.0, 0.0, 0.0);
+		}
+	}
+	glEnd();
+	glPopMatrix();
 
     glutSwapBuffers();
 }
@@ -370,7 +404,6 @@ void setLighting( const Light& light )
 	** Cette fonction doit fixer les parametres de lumiere
 	** sous OpenGL (glLightf[v])
 	*/
-
 }
 
 /*
