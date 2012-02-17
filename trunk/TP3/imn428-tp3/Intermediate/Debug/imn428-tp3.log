@@ -1,0 +1,37 @@
+﻿Build started 2012-02-16 19:45:31.
+     1>Project "C:\Users\Felix\Desktop\Mes Dossiers\École\Session 4\IMN 428\TP\imn428-tp3\imn428-tp3\imn428-tp3.vcxproj" on node 2 (build target(s)).
+     1>PrepareForBuild:
+         Creating directory "C:\Users\Felix\Desktop\Mes Dossiers\École\Session 4\IMN 428\TP\imn428-tp3\Build\Debug\".
+       InitializeBuildStatus:
+         Creating "Intermediate\Debug\imn428-tp3.unsuccessfulbuild" because "AlwaysCreate" was specified.
+       ClCompile:
+         c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /I"C:\Users\Felix\Desktop\Mes Dossiers\École\Session 4\IMN 428\TP\imn428-tp3\imn428-tp3\/Source" /I"C:\Users\Felix\Desktop\Mes Dossiers\École\Session 4\IMN 428\TP\imn428-tp3\imn428-tp3\/ThirdParty" /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Intermediate\Debug\\" /Fd"Intermediate\Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt "Source\imn428-tp3.cpp"
+         imn428-tp3.cpp
+     1>c:\users\felix\desktop\mes dossiers\école\session 4\imn 428\tp\imn428-tp3\imn428-tp3\source\imn428-tp3.cpp(331): warning C4101: 'i' : unreferenced local variable
+     1>c:\users\felix\desktop\mes dossiers\école\session 4\imn 428\tp\imn428-tp3\imn428-tp3\source\imn428-tp3.cpp(399): warning C4101: 'polyMode' : unreferenced local variable
+     1>c:\users\felix\desktop\mes dossiers\école\session 4\imn 428\tp\imn428-tp3\imn428-tp3\source\imn428-tp3.cpp(400): warning C4101: 'params' : unreferenced local variable
+     1>c:\users\felix\desktop\mes dossiers\école\session 4\imn 428\tp\imn428-tp3\imn428-tp3\source\imn428-tp3.cpp(747): warning C4101: 'MenuIdViewer' : unreferenced local variable
+       ManifestResourceCompile:
+         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\rc.exe /nologo /fo"Intermediate\Debug\imn428-tp3.exe.embed.manifest.res" Intermediate\Debug\imn428-tp3_manifest.rc 
+       Link:
+         c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Felix\Desktop\Mes Dossiers\École\Session 4\IMN 428\TP\imn428-tp3\Build\Debug\imn428-tp3.exe" /INCREMENTAL /NOLOGO "C:\Users\Felix\Desktop\Mes Dossiers\École\Session 4\IMN 428\TP\imn428-tp3\imn428-tp3\ThirdParty/Glut/GLUT32.lib" opengl32.lib glu32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Intermediate\Debug\imn428-tp3.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"C:\Users\Felix\Desktop\Mes Dossiers\École\Session 4\IMN 428\TP\imn428-tp3\Build\Debug\imn428-tp3.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Felix\Desktop\Mes Dossiers\École\Session 4\IMN 428\TP\imn428-tp3\Build\Debug\imn428-tp3.lib" /MACHINE:X86 "Intermediate\Debug\imn428-tp3.exe.embed.manifest.res"
+         "Intermediate\Debug\imn428-tp3.obj"
+       Manifest:
+         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /out:"Intermediate\Debug\imn428-tp3.exe.embed.manifest" /manifest "Intermediate\Debug\imn428-tp3.exe.intermediate.manifest"
+         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\rc.exe /nologo /fo"Intermediate\Debug\imn428-tp3.exe.embed.manifest.res" Intermediate\Debug\imn428-tp3_manifest.rc 
+       LinkEmbedManifest:
+         c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Felix\Desktop\Mes Dossiers\École\Session 4\IMN 428\TP\imn428-tp3\Build\Debug\imn428-tp3.exe" /INCREMENTAL /NOLOGO "C:\Users\Felix\Desktop\Mes Dossiers\École\Session 4\IMN 428\TP\imn428-tp3\imn428-tp3\ThirdParty/Glut/GLUT32.lib" opengl32.lib glu32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Intermediate\Debug\imn428-tp3.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"C:\Users\Felix\Desktop\Mes Dossiers\École\Session 4\IMN 428\TP\imn428-tp3\Build\Debug\imn428-tp3.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Felix\Desktop\Mes Dossiers\École\Session 4\IMN 428\TP\imn428-tp3\Build\Debug\imn428-tp3.lib" /MACHINE:X86 "Intermediate\Debug\imn428-tp3.exe.embed.manifest.res"
+         "Intermediate\Debug\imn428-tp3.obj"
+         imn428-tp3.vcxproj -> C:\Users\Felix\Desktop\Mes Dossiers\École\Session 4\IMN 428\TP\imn428-tp3\Build\Debug\imn428-tp3.exe
+       PostBuildEvent:
+         copy "C:\Users\Felix\Desktop\Mes Dossiers\École\Session 4\IMN 428\TP\imn428-tp3\imn428-tp3\ThirdParty\Glut\GLUT32.DLL" "C:\Users\Felix\Desktop\Mes Dossiers\École\Session 4\IMN 428\TP\imn428-tp3\Build\Debug\"
+         :VCEnd
+                 1 file(s) copied.
+       FinalizeBuildStatus:
+         Deleting file "Intermediate\Debug\imn428-tp3.unsuccessfulbuild".
+         Touching "Intermediate\Debug\imn428-tp3.lastbuildstate".
+     1>Done Building Project "C:\Users\Felix\Desktop\Mes Dossiers\École\Session 4\IMN 428\TP\imn428-tp3\imn428-tp3\imn428-tp3.vcxproj" (build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:07.03
