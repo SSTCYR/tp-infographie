@@ -544,6 +544,11 @@ void keyboard( unsigned char key, int /* x */, int /* y */ )
             ** Changer le shading : flat VS smooth (voir tp1)
             **
             */
+			glGetIntegerv(GL_SHADE_MODEL,&params);
+			if(params==GL_SMOOTH)
+				glShadeModel(GL_FLAT);
+			else
+				glShadeModel(GL_SMOOTH);
 		break;
 
 
@@ -554,6 +559,11 @@ void keyboard( unsigned char key, int /* x */, int /* y */ )
             ** Activer/deactiver le rendu fil de fer (voir tp1)
             **
             */
+			glGetIntegerv(GL_POLYGON_MODE,polyMode);
+			if(polyMode[1]==GL_LINE)
+				glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
+			else
+				glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
 		break;
 
 		//Facteurs speculaire
