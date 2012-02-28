@@ -3,10 +3,10 @@
 
  TP3: Introduction a la modelisation et a l'illumination locale.
 
- Nom1:
- Nom2:
- Nom3:
- Nom4:
+ Nom1: Félix-Antoine Ouellet 09 137 551
+ Nom2: Jean-Philippe Ouellet 11 057 955
+ Nom3: Alexandre Bizeau      11 109 837
+ Nom4: Francois Rheault      11 040 348
 */
 
 
@@ -195,23 +195,23 @@ void drawPlane( int n , bool displayNormals)
 	**
 	*/
 	glColor4fv(gMaterials[0].diffuse);
-	glPushMatrix();
+
+	float increment = (float)200/n;
 	glBegin(GL_QUADS);
 	{
-		int increment = 200/n;
-		for(int i = 0; i < 100; i+=increment)
+		for(int i = 0; i < n; i++)
 		{
-		    for(int j = 0; j < 100; j+=increment)
+		    for(int j = 0; j < n; j++)
 			{
-				glVertex3f(j, -100, i);
-				glVertex3f(j+increment, -100, i);
-				glVertex3f(j, -100, i+increment);
-				glVertex3f(j+increment, -100, i+increment);
+				glVertex3f(-100+increment*j, -100, -100+increment*i);
+				glVertex3f(-100+increment*(j+1), -100, -100+increment*i);
+				glVertex3f(-100+increment*(j+1), -100, -100+increment*(i+1));
+				glVertex3f(-100+increment*j, -100, -100+increment*(i+1));
+
 			}
 		}
 	}
 	glEnd();
-	glPopMatrix();
 }
 
 
@@ -232,6 +232,7 @@ void drawSweepObject(int resolution, bool displayNormals)
 	** Utilisez gMaterials[1].diffuse comme couleur (glColor4fv)
 	**
 	*/
+	glColor4fv(gMaterials[1].diffuse);
 }
 
 /*
@@ -249,6 +250,7 @@ void drawRevolutionObject(int resolution, bool displayNormals)
 	** utilisez gMaterials[1].diffuse comme couleur (glColor)
 	**
 	*/
+	glColor4fv(gMaterials[1].diffuse);
 }
 
 /*
@@ -277,7 +279,11 @@ void drawObject()
 			break;
 		case ActionTeapot:
 			glFrontFace( GL_CW );
+			glColor4fv(gMaterials[1].diffuse);
+			glPushMatrix();
+			glTranslated(0,-50,0);
 			glutSolidTeapot(50);
+			glPopMatrix();
 			glFrontFace( GL_CCW );
 			break;
 
@@ -300,6 +306,20 @@ void drawLights()
 	** Vous devez desactiver l'eclairage et le remettre dans son
 	** etat inital ensuite
 	*/
+
+	glDisable(GL_LIGHTING);
+	for (int i = 0; i < 2; i++) {
+		glDisable(gLights[i].lightID);
+		setLighting(gLights[i]);
+		glPushMatrix();
+		glTranslated(gLights[i].position[0], gLights[i].position[1], gLights[i].position[2]);
+		glColor3f(gLights[i].diffuse[0], gLights[i].diffuse[1], gLights[i].diffuse[2]);
+		glutSolidSphere(8,20,20);
+		glPopMatrix();
+		
+		glEnable(gLights[i].lightID);
+	}
+	glEnable(GL_LIGHTING);
 }
 
 /*
@@ -334,16 +354,15 @@ void displayViewerWindow()
 	setCamera();
 
 	/* Afficher les lumieres */
-	//setLighting();
-	//drawLights();
+	drawLights();
 
     /* Afficher le plan avec le gMaterials[0] */
 	setMaterial(gMaterials[0]);
-	//drawPlane(4, false);
+	drawPlane(objectResolution, drawNormals);
 
     /* Afficher l'objet avec le gMaterials[1] */
 	setMaterial(gMaterials[1]);
-	//drawObject();
+	drawObject();
 
 	glutSwapBuffers();
 
@@ -352,7 +371,7 @@ void displayViewerWindow()
 
 /*
     Fonction qui affiche la silhouette dans la fenetre 'modeler'
-    Appelee chaque fois que la fenetre du modeler doit etre rafraiche.
+    Appelee chaque fois que la fenetre du modeler doit etre rafraichie.
 */
 void displayModelerWindow(void)
 {
@@ -381,13 +400,31 @@ void displayModelerWindow(void)
  	** et l'axe central blanc (de -250 a 250). 
  	**
  	**/
-	glBegin(GL_LINE);
-	for(int i = 0; i < NB_MAX_POINTS; i++)
+
+	glPointSize(6.0);
+	glBegin(GL_POINTS);
+	for(int i = 0; i < (nbPointsOnSilhouette); i++)
 	{
 		glColor3f(0.0, 1.0, 0.0);
 		glVertex2f(silhouettePointArray[i].x, silhouettePointArray[i].y);
-		glColor3f(1.0, 0.0, 0.0);
 	}
+	glEnd();
+
+	glLineWidth(5);
+	glBegin(GL_LINES);
+	for(int i = 0; i < (nbPointsOnSilhouette-1); i++)
+	{
+		glColor3f(1.0, 0.0, 0.0);
+		glVertex2f(silhouettePointArray[i].x, silhouettePointArray[i].y);
+		glVertex2f(silhouettePointArray[i+1].x, silhouettePointArray[i+1].y);
+	}
+	glEnd();
+
+	glLineWidth(1);
+	glBegin(GL_LINES);
+	glColor3f(1.0, 1.0, 1.0);
+	glVertex2f(0, -250);
+	glVertex2f(0, 250);
 	glEnd();
 
     glutSwapBuffers();
@@ -409,6 +446,9 @@ void setLighting( const Light& light )
 	glLightfv(light.lightID, GL_DIFFUSE, light.diffuse);
 	glLightfv(light.lightID, GL_SPECULAR, light.specular);
 	glLightfv(light.lightID, GL_POSITION, light.position);
+	glLightf(light.lightID, GL_CONSTANT_ATTENUATION, light.Kc);
+	glLightf(light.lightID, GL_LINEAR_ATTENUATION, light.Kl);
+	glLightf(light.lightID, GL_QUADRATIC_ATTENUATION, light.Kq);
 }
 
 /*
@@ -520,7 +560,7 @@ void keyboard( unsigned char key, int /* x */, int /* y */ )
             */
 			if (glIsEnabled(GL_LIGHTING))
 			    glDisable(GL_LIGHTING);
-			else glDisable(GL_LIGHTING);
+			else glEnable(GL_LIGHTING);
 		break;
 
         case 'n': /* afficher les normales */
