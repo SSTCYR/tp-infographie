@@ -16,6 +16,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+#include <cmath>
 
 #ifdef __APPLE__
 	#include <GLUT/glut.h>
@@ -207,7 +208,6 @@ void drawPlane( int n , bool displayNormals)
 				glVertex3f(-100+increment*(j+1), -100, -100+increment*i);
 				glVertex3f(-100+increment*(j+1), -100, -100+increment*(i+1));
 				glVertex3f(-100+increment*j, -100, -100+increment*(i+1));
-
 			}
 		}
 	}
@@ -233,6 +233,23 @@ void drawSweepObject(int resolution, bool displayNormals)
 	**
 	*/
 	glColor4fv(gMaterials[1].diffuse);
+
+	float increment = (float)400/resolution;
+	glBegin(GL_QUADS);
+	{
+		for(int i = 0; i < nbPointsOnSilhouette-1; i++)
+		{
+		    for(int j = 0; j < resolution; j++)
+			{
+				glVertex3f(silhouettePointArray[i].x, silhouettePointArray[i].y, -200+increment*j);
+				glVertex3f(silhouettePointArray[i].x, silhouettePointArray[i].y, -200+increment*(j+1));
+				glVertex3f(silhouettePointArray[i+1].x, silhouettePointArray[i+1].y, -200+increment*(j+1));
+				glVertex3f(silhouettePointArray[i+1].x, silhouettePointArray[i+1].y, -200+increment*j);
+			}
+		}
+	}
+	glEnd();
+
 }
 
 /*
@@ -251,6 +268,26 @@ void drawRevolutionObject(int resolution, bool displayNormals)
 	**
 	*/
 	glColor4fv(gMaterials[1].diffuse);
+
+
+	for(int i = 0; i < nbPointsOnSilhouette-1; i++)
+	{
+		
+		for(int j = 0; j <= resolution; j++)
+		{
+
+			glBegin(GL_QUADS);
+			{
+				glVertex3f(silhouettePointArray[i].x, silhouettePointArray[i].y, sin((float)4));
+				glVertex3f(silhouettePointArray[i+1].x, silhouettePointArray[i+1].y, 0);
+
+				glVertex3f(silhouettePointArray[i+1].x, silhouettePointArray[i+1].y, 200);
+				glVertex3f(silhouettePointArray[i].x, silhouettePointArray[i].y, 200);
+			}
+			glEnd();
+			
+		}
+	}
 }
 
 /*
@@ -302,6 +339,7 @@ void drawLights()
 	** Dessine chaque lumiere en utilisant sa composante diffuse
 	** comme couleur.  Utilisez la commande "glutSolideSphere" pour afficher
 	** les lumieres.
+
 	**
 	** Vous devez desactiver l'eclairage et le remettre dans son
 	** etat inital ensuite
@@ -309,15 +347,19 @@ void drawLights()
 
 	glDisable(GL_LIGHTING);
 	for (int i = 0; i < 2; i++) {
-		glDisable(gLights[i].lightID);
-		setLighting(gLights[i]);
+
 		glPushMatrix();
-		glTranslated(gLights[i].position[0], gLights[i].position[1], gLights[i].position[2]);
-		glColor3f(gLights[i].diffuse[0], gLights[i].diffuse[1], gLights[i].diffuse[2]);
-		glutSolidSphere(8,20,20);
-		glPopMatrix();
-		
+
+		glDisable(gLights[i].lightID);
+		setLighting(gLights[i]);	
 		glEnable(gLights[i].lightID);
+
+		glTranslated(gLights[i].position[0], gLights[i].position[1], gLights[i].position[2]);
+		glColor4f(gLights[i].diffuse[0], gLights[i].diffuse[1], gLights[i].diffuse[2], gLights[i].diffuse[3]);
+		glutSolidSphere(8,20,20);
+
+		glPopMatrix();
+
 	}
 	glEnable(GL_LIGHTING);
 }
