@@ -199,21 +199,23 @@ void drawPlane( int n , bool displayNormals)
 	glColor4fv(gMaterials[0].diffuse);
 
 	float increment = (float)200/n;
-	glBegin(GL_QUADS);
+	
 	{
 		for(int i = 0; i < n; i++)
 		{
 		    for(int j = 0; j < n; j++)
 			{
 				glNormal3f(0,-1,0);
+				glBegin(GL_QUADS);
 				glVertex3f(-100+increment*j, -100, -100+increment*i);
 				glVertex3f(-100+increment*(j+1), -100, -100+increment*i);
 				glVertex3f(-100+increment*(j+1), -100, -100+increment*(i+1));
 				glVertex3f(-100+increment*j, -100, -100+increment*(i+1));
+				glEnd();
 			}
 		}
 	}
-	glEnd();
+	
 
 	if (displayNormals){
 		glBegin(GL_LINES);
