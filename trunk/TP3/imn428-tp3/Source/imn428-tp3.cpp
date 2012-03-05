@@ -199,20 +199,20 @@ void drawPlane( int n , bool displayNormals)
 	glColor4fv(gMaterials[0].diffuse);
 
 	float increment = (float)200/n;
-	
+	for(int i = 0; i < n; i++)
 	{
-		for(int i = 0; i < n; i++)
+		for(int j = 0; j < n; j++)
 		{
-		    for(int j = 0; j < n; j++)
-			{
-				glNormal3f(0,-1,0);
-				glBegin(GL_QUADS);
-				glVertex3f(-100+increment*j, -100, -100+increment*i);
-				glVertex3f(-100+increment*(j+1), -100, -100+increment*i);
-				glVertex3f(-100+increment*(j+1), -100, -100+increment*(i+1));
-				glVertex3f(-100+increment*j, -100, -100+increment*(i+1));
-				glEnd();
-			}
+			glBegin(GL_QUADS);
+			glNormal3f(0.0, -1.0, 0.0);
+			glVertex3f(-100+increment*j, -100, -100+increment*i);
+			glNormal3f(0.0, -1.0, 0.0);
+			glVertex3f(-100+increment*(j+1), -100, -100+increment*i);
+			glNormal3f(0.0, -1.0, 0.0);
+			glVertex3f(-100+increment*(j+1), -100, -100+increment*(i+1));
+			glNormal3f(0.0, -1.0, 0.0);
+			glVertex3f(-100+increment*j, -100, -100+increment*(i+1));
+			glEnd();
 		}
 	}
 	
@@ -230,9 +230,7 @@ void drawPlane( int n , bool displayNormals)
 			}
 		}
 		glEnd();
-
 	}
-
 }
 
 
@@ -256,21 +254,36 @@ void drawSweepObject(int resolution, bool displayNormals)
 	glColor4fv(gMaterials[1].diffuse);
 
 	float increment = (float)400/resolution;
-	glBegin(GL_QUADS);
+	float surfaceNormal [3];
+	
+	for(int i = 0; i < nbPointsOnSilhouette-1; i++)
 	{
-		for(int i = 0; i < nbPointsOnSilhouette-1; i++)
+		for(int j = 0; j < resolution; j++)
 		{
-		    for(int j = 0; j < resolution; j++)
+			glBegin(GL_QUADS);
+			surfaceNormal[0] = -(silhouettePointArray[i+1].y - silhouettePointArray[i].y)*increment;
+			surfaceNormal[1] = (silhouettePointArray[i+1].x - silhouettePointArray[i].x)*increment;
+			surfaceNormal[2] = 0;
+			glNormal3fv(surfaceNormal);
+			glVertex3f(silhouettePointArray[i].x, silhouettePointArray[i].y, -200+increment*j);
+			glVertex3f(silhouettePointArray[i].x, silhouettePointArray[i].y, -200+increment*(j+1));
+			glVertex3f(silhouettePointArray[i+1].x, silhouettePointArray[i+1].y, -200+increment*(j+1));
+			glVertex3f(silhouettePointArray[i+1].x, silhouettePointArray[i+1].y, -200+increment*j);
+			glEnd();
+			if(displayNormals)
 			{
+				float norme = sqrt(pow(surfaceNormal[0],2) + pow(surfaceNormal[1],2) + pow(surfaceNormal[2],2));
+				surfaceNormal[0] /= norme;
+				surfaceNormal[1] /= norme;
+				surfaceNormal[2] /= norme;
+				glBegin(GL_LINES);
 				glVertex3f(silhouettePointArray[i].x, silhouettePointArray[i].y, -200+increment*j);
-				glVertex3f(silhouettePointArray[i].x, silhouettePointArray[i].y, -200+increment*(j+1));
-				glVertex3f(silhouettePointArray[i+1].x, silhouettePointArray[i+1].y, -200+increment*(j+1));
-				glVertex3f(silhouettePointArray[i+1].x, silhouettePointArray[i+1].y, -200+increment*j);
+				glVertex3f(silhouettePointArray[i].x + surfaceNormal[0]*20, 
+					silhouettePointArray[i].y + surfaceNormal[1]*20, -200+increment*j + surfaceNormal[2]*20);
+				glEnd();
 			}
 		}
 	}
-	glEnd();
-
 }
 
 /*
@@ -289,14 +302,17 @@ void drawRevolutionObject(int resolution, bool displayNormals)
 	**
 	*/
 	glColor4fv(gMaterials[1].diffuse);
-
+	float surfaceNormal [3];
 
 	for(int i = 0; i < nbPointsOnSilhouette-1; i++)
 	{
 		
 		for(int j = 0; j <= resolution; j++)
 		{
-
+			surfaceNormal[0] = (silhouettePointArray[i+1].y - silhouettePointArray[i].y)*(-silhouettePointArray[i+1].x*sin(((float)2*PI/resolution)*(j+1))+silhouettePointArray[i].x*sin(((float)2*PI/resolution)*j));
+			surfaceNormal[1] = -(silhouettePointArray[i+1].x - silhouettePointArray[i].x)*(-silhouettePointArray[i+1].x*sin(((float)2*PI/resolution)*(j+1))+silhouettePointArray[i].x*sin(((float)2*PI/resolution)*j));
+			surfaceNormal[2] = -(silhouettePointArray[i+1].y - silhouettePointArray[i].y)*(silhouettePointArray[i+1].x*cos(((float)2*PI/resolution)*(j+1))-silhouettePointArray[i].x*cos(((float)2*PI/resolution)*j));
+			glNormal3fv(surfaceNormal);
 			glBegin(GL_QUADS);
 			{
 				glVertex3f(silhouettePointArray[i].x*cos(((float)2*PI/resolution)*j), silhouettePointArray[i].y, -silhouettePointArray[i].x*sin(((float)2*PI/resolution)*j));
@@ -306,6 +322,17 @@ void drawRevolutionObject(int resolution, bool displayNormals)
 				glVertex3f(silhouettePointArray[i].x*cos(((float)2*PI/resolution)*(j+1)), silhouettePointArray[i].y, -silhouettePointArray[i].x*sin(((float)2*PI/resolution)*(j+1)));
 			}
 			glEnd();
+			if(displayNormals)
+			{
+				float norme = sqrt(pow(surfaceNormal[0],2) + pow(surfaceNormal[1],2) + pow(surfaceNormal[2],2));
+				surfaceNormal[0] /= norme;
+				surfaceNormal[1] /= norme;
+				surfaceNormal[2] /= norme;
+				glBegin(GL_LINES);
+				glVertex3f(silhouettePointArray[i].x*cos(((float)2*PI/resolution)*j), silhouettePointArray[i].y, -silhouettePointArray[i].x*sin(((float)2*PI/resolution)*j));
+				glVertex3f(silhouettePointArray[i].x*cos(((float)2*PI/resolution)*j)+surfaceNormal[0]*20, silhouettePointArray[i].y+surfaceNormal[1]*20, -silhouettePointArray[i].x*sin(((float)2*PI/resolution)*j)+surfaceNormal[2]*20);
+				glEnd();
+			}
 		}
 	}
 }
@@ -364,24 +391,41 @@ void drawLights()
 	** Vous devez desactiver l'eclairage et le remettre dans son
 	** etat inital ensuite
 	*/
+	if(glIsEnabled(GL_LIGHTING) == GL_TRUE)
+	{
+		glDisable(GL_LIGHTING);
+		for (int i = 0; i < 2; i++) {
 
-	glDisable(GL_LIGHTING);
-	for (int i = 0; i < 2; i++) {
+			glPushMatrix();
 
-		glPushMatrix();
+			glDisable(gLights[i].lightID);
+			if(gLights[i].on)
+			{
+				setLighting(gLights[i]);	
+				glEnable(gLights[i].lightID);
+			}
 
-		glDisable(gLights[i].lightID);
-		setLighting(gLights[i]);	
-		glEnable(gLights[i].lightID);
+			glTranslated(gLights[i].position[0], gLights[i].position[1], gLights[i].position[2]);
+			glColor4fv(gLights[i].diffuse);
+			glutSolidSphere(8,20,20);
 
-		glTranslated(gLights[i].position[0], gLights[i].position[1], gLights[i].position[2]);
-		glColor4fv(gLights[i].diffuse);
-		glutSolidSphere(8,20,20);
-
-		glPopMatrix();
-
+			glPopMatrix();
+		}
+		glEnable(GL_LIGHTING);
 	}
-	glEnable(GL_LIGHTING);
+	else
+	{
+		for (int i = 0; i < 2; i++) {
+
+			glPushMatrix();
+			
+			glTranslated(gLights[i].position[0], gLights[i].position[1], gLights[i].position[2]);
+			glColor4fv(gLights[i].diffuse);
+			glutSolidSphere(8,20,20);
+
+			glPopMatrix();
+		}
+	}
 }
 
 /*
@@ -413,6 +457,8 @@ void displayViewerWindow()
 	gluPerspective(gCam.fovy, gCam.ratio, gCam.znear, gCam.zfar);
 
     /* Positionner la camera */
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
 	setCamera();
 
 	/* Afficher les lumieres */
@@ -620,9 +666,10 @@ void keyboard( unsigned char key, int /* x */, int /* y */ )
             ** Activer/deactiver l'illumination
             **
             */
-			if (glIsEnabled(GL_LIGHTING))
-			    glDisable(GL_LIGHTING);
-			else glEnable(GL_LIGHTING);
+			if(glIsEnabled(GL_LIGHTING)==GL_FALSE)
+				glEnable(GL_LIGHTING);
+			else
+				glDisable(GL_LIGHTING);
 		break;
 
         case 'n': /* afficher les normales */
@@ -707,8 +754,6 @@ void keyboard( unsigned char key, int /* x */, int /* y */ )
 */
 void setCamera()
 {
-
-
 	float z = gCam.r*cos(deg2rad(gCam.theta))*cos(deg2rad(gCam.phi));
 	float x = gCam.r*sin(deg2rad(gCam.theta))*cos(deg2rad(gCam.phi));
 	float y = gCam.r*sin(deg2rad(gCam.phi));
