@@ -11,6 +11,7 @@
 
 
 #define GLUT_DISABLE_ATEXIT_HACK
+#define PI 3.1415926
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -204,6 +205,7 @@ void drawPlane( int n , bool displayNormals)
 		{
 		    for(int j = 0; j < n; j++)
 			{
+				glNormal3f(0,-1,0);
 				glVertex3f(-100+increment*j, -100, -100+increment*i);
 				glVertex3f(-100+increment*(j+1), -100, -100+increment*i);
 				glVertex3f(-100+increment*(j+1), -100, -100+increment*(i+1));
@@ -212,6 +214,23 @@ void drawPlane( int n , bool displayNormals)
 		}
 	}
 	glEnd();
+
+	if (displayNormals){
+		glBegin(GL_LINES);
+		{
+			for(int i = 0; i < n; i++)
+			{
+				for(int j = 0; j < n; j++)
+				{
+					glVertex3f(-100+increment*(j+1), -100, -100+increment*(i+1));
+					glVertex3f(-100+increment*(j+1), -90, -100+increment*(i+1));
+				}
+			}
+		}
+		glEnd();
+
+	}
+
 }
 
 
@@ -278,14 +297,13 @@ void drawRevolutionObject(int resolution, bool displayNormals)
 
 			glBegin(GL_QUADS);
 			{
-				glVertex3f(silhouettePointArray[i].x, silhouettePointArray[i].y, sin((float)4));
-				glVertex3f(silhouettePointArray[i+1].x, silhouettePointArray[i+1].y, 0);
+				glVertex3f(silhouettePointArray[i].x*cos(((float)2*PI/resolution)*j), silhouettePointArray[i].y, -silhouettePointArray[i].x*sin(((float)2*PI/resolution)*j));
+				glVertex3f(silhouettePointArray[i+1].x*cos(((float)2*PI/resolution)*j), silhouettePointArray[i+1].y, -silhouettePointArray[i+1].x*sin(((float)2*PI/resolution)*j));
 
-				glVertex3f(silhouettePointArray[i+1].x, silhouettePointArray[i+1].y, 200);
-				glVertex3f(silhouettePointArray[i].x, silhouettePointArray[i].y, 200);
+				glVertex3f(silhouettePointArray[i+1].x*cos(((float)2*PI/resolution)*(j+1)), silhouettePointArray[i+1].y, -silhouettePointArray[i+1].x*sin(((float)2*PI/resolution)*(j+1)));
+				glVertex3f(silhouettePointArray[i].x*cos(((float)2*PI/resolution)*(j+1)), silhouettePointArray[i].y, -silhouettePointArray[i].x*sin(((float)2*PI/resolution)*(j+1)));
 			}
 			glEnd();
-			
 		}
 	}
 }
@@ -355,7 +373,7 @@ void drawLights()
 		glEnable(gLights[i].lightID);
 
 		glTranslated(gLights[i].position[0], gLights[i].position[1], gLights[i].position[2]);
-		glColor4f(gLights[i].diffuse[0], gLights[i].diffuse[1], gLights[i].diffuse[2], gLights[i].diffuse[3]);
+		glColor4fv(gLights[i].diffuse);
 		glutSolidSphere(8,20,20);
 
 		glPopMatrix();
