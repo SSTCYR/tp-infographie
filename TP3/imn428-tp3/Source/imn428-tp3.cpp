@@ -330,7 +330,7 @@ void drawRevolutionObject(int resolution, bool displayNormals)
 				surfaceNormal[2] /= norme;
 				glBegin(GL_LINES);
 				glVertex3f(silhouettePointArray[i].x*cos(((float)2*PI/resolution)*j), silhouettePointArray[i].y, -silhouettePointArray[i].x*sin(((float)2*PI/resolution)*j));
-				glVertex3f(silhouettePointArray[i].x*cos(((float)2*PI/resolution)*j)+surfaceNormal[0]*20, silhouettePointArray[i].y+surfaceNormal[1]*20, -silhouettePointArray[i].x*sin(((float)2*PI/resolution)*j)+surfaceNormal[2]*20);
+				glVertex3f(silhouettePointArray[i].x*cos(((float)2*PI/resolution)*j)+surfaceNormal[0]*20, silhouettePointArray[i].y, -silhouettePointArray[i].x*sin(((float)2*PI/resolution)*j)+surfaceNormal[2]*20);
 				glEnd();
 			}
 		}
