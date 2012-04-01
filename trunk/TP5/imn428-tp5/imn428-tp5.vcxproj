@@ -78,6 +78,9 @@
   <ItemGroup>
     <ClCompile Include="imn428-tp5.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Source\SolarSystem_Config.h" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
