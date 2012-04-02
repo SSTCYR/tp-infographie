@@ -14,6 +14,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+#include <vector>
+
+using std::vector;
 
 #ifdef __APPLE__
 	#include <GLUT/glut.h>
@@ -170,7 +173,15 @@ void drawControlPoints()
 	/* AJOUTER DU CODE ICI */
 	// Couleur : vert
 	// Taille : 4
-	
+	glColor3f(0.0, 1.0, 0.0);
+	glPointSize(4.0);
+	glBegin(GL_POINTS);
+		for(int i = 0; i < nbControlPoints; i++)
+		{
+			glVertex2d(ControlPointArray[i].x, ControlPointArray[i].y);
+		}
+	glEnd();
+
 }
 
 void drawLines()
@@ -180,7 +191,31 @@ void drawLines()
 	glColor4f(1.0,0,0,1);
 	
 	/* AJOUTER DU CODE ICI */
+	glBegin(GL_LINES);
+		for(int i = 0; i < nbControlPoints - 1; i++)
+		{
+			glVertex2d(ControlPointArray[i].x, ControlPointArray[i].y);
+			glVertex2d(ControlPointArray[i+1].x, ControlPointArray[i+1].y);
+		}
+	glEnd();
+}
+
+vect2D drawBezierCurvesImpl(vect2D points[], int nbPts, double precision)
+{
+	if(nbPts <= 1)
+		return points[0];
 	
+	vect2D *newPts = new vect2D[--nbPts];
+	for(int i = 0; i < nbPts; i++)
+	{
+		vect2D d = subVect(points[i+1], points[i]);
+		vect2D v = multScalaireVect(precision, d);
+		vect2D f = addVect(points[i], v);
+		newPts[i] = f;
+	}
+	vect2D pt = drawBezierCurvesImpl(newPts, nbPts, precision);
+	delete newPts;
+	return pt;
 }
 
 void drawBezierCurves()
@@ -188,9 +223,26 @@ void drawBezierCurves()
 	// Caractéristiques visuelles de la ligne
 	glLineWidth(1.5);
 	glColor4f(1.0,0,0,1);
-	
+
 	/* AJOUTER DU CODE ICI */
 	
+	if(curvePrecision == 0)
+		return;
+
+	vector<vect2D> bezierPts;
+
+	for(double i = 0; i <= 1; i += (double)1/curvePrecision)
+	{
+		bezierPts.push_back(drawBezierCurvesImpl(ControlPointArray, nbControlPoints, i));
+	}
+
+	glBegin(GL_LINES);
+		for(int i = 0; i < bezierPts.size() - 1; i++)
+		{
+			glVertex2d(bezierPts[i].x, bezierPts[i].y);
+			glVertex2d(bezierPts[i+1].x, bezierPts[i+1].y);
+		}
+	glEnd();
 }
 
 void drawBSplineCurves()
@@ -200,7 +252,49 @@ void drawBSplineCurves()
 	glColor4f(1.0,0,0,1);
 	
 	/* AJOUTER DU CODE ICI */
+	if(nbControlPoints < paramK || curvePrecision < 1)
+		return;
+
+	//int u = nbControlPoints + 1 - paramK;
+	vector<vect2D> nodes;
+	if(paramK == 3)
+	{
+		for(int i = 0; i < nbControlPoints - 2; i++)
+		{
+			for(double j = 0; j <= 1; j += (double)1/curvePrecision)
+			{
+				vect2D p1 = multScalaireVect(pow(1-j,2.0),ControlPointArray[i]);
+				vect2D p2 = multScalaireVect(-2*pow(j,2.0)+2*j+1,ControlPointArray[i+1]);
+				vect2D p3 = multScalaireVect(pow(j,2.0), ControlPointArray[i+2]);
+
+				nodes.push_back(multScalaireVect(0.5, addVect(addVect(p1, p2),p3)));
+			}
+		}
+	}
+	else
+	{
+		for(int i = 1; i < nbControlPoints - 2; i++)
+		{
+			for(double j = 0; j <= 1; j += (double)1/curvePrecision)
+			{
+				vect2D p1 = multScalaireVect(-pow(j,3.0) + 3*pow(j,2.0)-3*j+1, ControlPointArray[i-1]);
+				vect2D p2 = multScalaireVect(3*pow(j,3.0)-6*pow(j,2.0)+4, ControlPointArray[i]);
+				vect2D p3 = multScalaireVect(-3*pow(j,3.0) + 3*pow(j,2.0)+3*j+1, ControlPointArray[i+1]);
+				vect2D p4 = multScalaireVect(pow(j,3.0), ControlPointArray[i+2]);
+
+				nodes.push_back(multScalaireVect((double)1/6, addVect(addVect(p1,p2), addVect(p3,p4))));
+			}
+		}
+	}
 	
+
+	glBegin(GL_LINES);
+		for(int i = 0; i < nodes.size() - 1; i++)
+		{
+			glVertex2d(nodes[i].x, nodes[i].y);
+			glVertex2d(nodes[i+1].x, nodes[i+1].y);
+		}
+	glEnd();
 }
 
 /*
