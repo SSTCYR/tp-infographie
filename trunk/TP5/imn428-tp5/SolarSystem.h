@@ -5,6 +5,7 @@
 
 #include "Camera.h"
 #include "CelestialBody.h"
+#include "RGBImage.h"
 #include "SolarSystemTimer.h"
 #include "Sun.h"
 
@@ -17,6 +18,7 @@ private:
 	vector<CelestialBody> m_Planets;
 	Timer m_Timer;
 	Camera m_Camera;
+	RGBImage m_SkyBox;
 public:
 	SolarSystem();
 	~SolarSystem();
