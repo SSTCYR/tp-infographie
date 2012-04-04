@@ -83,8 +83,6 @@
     <ClCompile Include="RGBImage.cpp" />
     <ClCompile Include="SolarSystem.cpp" />
     <ClCompile Include="SolarSystemTimer.cpp" />
-    <ClCompile Include="Sun.cpp" />
-    <ClCompile Include="Utility.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
@@ -94,7 +92,6 @@
     <ClInclude Include="SolarSystem.h" />
     <ClInclude Include="SolarSystemTimer.h" />
     <ClInclude Include="Source\SolarSystem_Config.h" />
-    <ClInclude Include="Sun.h" />
     <ClInclude Include="Utility.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
