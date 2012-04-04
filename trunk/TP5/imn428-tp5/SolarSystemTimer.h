@@ -5,6 +5,7 @@
 
 using namespace std;
 
+// TODO : Transform into a singleton
 class Timer
 {
 public:

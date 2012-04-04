@@ -1,11 +1,23 @@
 #ifndef UTILITY_H
 #define UTILITY_H
 
-class Utility
+typedef struct
 {
-public:
-	static void KeyboardFunc();
-	static void MouseFunc();
-};
+	double X;
+	double Y;
+	double Z;
+} Position;
+
+typedef struct 
+{
+	int button;
+	int buttonState;
+	int x;
+	int y;
+} MouseEvent;
+
+typedef struct
+{
+} Light;
 
 #endif // UTILITY_H

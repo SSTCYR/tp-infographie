@@ -1,11 +1,24 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
+#include "CelestialBody.h"
+#include "Utility.h"
+
 class Camera
 {
+private:
+	bool m_Fixed;
+	CelestialBody m_CurrentFocus;
+	Position m_Position;
+	
+	void ChangeFocus(int planetIndex, bool fixed);
+	void Rotate();
+	void Zoom();
 public:
-	Camera(void);
-	~Camera(void);
+	Camera(CelestialBody focus);
+	~Camera();
+	void KeyboardFunc();
+	void MouseFunc();
 };
 
 #endif // CAMERA_H

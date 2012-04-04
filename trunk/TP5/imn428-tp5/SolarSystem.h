@@ -7,15 +7,11 @@
 #include "CelestialBody.h"
 #include "RGBImage.h"
 #include "SolarSystemTimer.h"
-#include "Sun.h"
-
-using std::vector;
 
 class SolarSystem
 {
 private:
-	Sun m_Sun;
-	vector<CelestialBody> m_Planets;
+	CelestialBody m_Sun;
 	Timer m_Timer;
 	Camera m_Camera;
 	RGBImage m_SkyBox;
