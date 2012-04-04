@@ -1,10 +1,5 @@
 #define GLUT_DISABLE_ATEXIT_HACK
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <math.h>
-
 #ifdef __APPLE__
 	#include <GLUT/glut.h>
 #else
@@ -14,8 +9,12 @@
 	#include "Glut/GLUT.h"
 #endif
 
+#include "SolarSystem.h"
+
 int main(int argc, char* argv[])
 {
+	SolarSystem ss;
+	ss.RenderScene();
 	return 0;
 }
 
