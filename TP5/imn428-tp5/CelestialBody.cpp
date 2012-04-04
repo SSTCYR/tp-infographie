@@ -19,3 +19,9 @@ void CelestialBody::InitRing()
 Position CelestialBody::GetPosition()
 {
 }
+
+vector<CelestialBody> CelestialBody::GetSatellites()
+{
+}
+
+void CelestialBody::Update()
