@@ -1,11 +1,9 @@
 #include "Utility.h"
 
-
-Utility::Utility(void)
+void Utility::KeyboardFunc()
 {
 }
 
-
-Utility::~Utility(void)
+void Utility::MouseFunc()
 {
 }

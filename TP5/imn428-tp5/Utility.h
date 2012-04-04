@@ -4,8 +4,8 @@
 class Utility
 {
 public:
-	Utility(void);
-	~Utility(void);
+	static void KeyboardFunc();
+	static void MouseFunc();
 };
 
 #endif // UTILITY_H
