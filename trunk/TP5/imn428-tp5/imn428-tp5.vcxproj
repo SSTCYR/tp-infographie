@@ -77,8 +77,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="imn428-tp5.cpp" />
+    <ClCompile Include="SolarSystemTimer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="SolarSystemTimer.h" />
     <ClInclude Include="Source\SolarSystem_Config.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
