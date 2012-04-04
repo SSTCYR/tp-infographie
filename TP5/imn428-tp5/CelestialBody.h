@@ -32,6 +32,7 @@ private:
 
 	void InitRing();
 public:
+	CelestialBody();
 	CelestialBody(CBParam param, char *planetName, bool isSun, Timer& timer, vector<CelestialBody> satellites);
 	CelestialBody(CBParam param, char *planetName, Timer& timer, bool hasRing);
 	~CelestialBody();  

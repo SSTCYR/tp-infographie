@@ -15,6 +15,7 @@ private:
 	void Rotate();
 	void Zoom();
 public:
+	Camera();
 	Camera(CelestialBody focus);
 	~Camera();
 	void KeyboardFunc();
