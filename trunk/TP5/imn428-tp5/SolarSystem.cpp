@@ -5,7 +5,10 @@ SolarSystem::SolarSystem(void)
 {
 }
 
-
 SolarSystem::~SolarSystem(void)
+{
+}
+
+void SolarSystem::RenderScene()
 {
 }
