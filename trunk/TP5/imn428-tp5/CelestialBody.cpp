@@ -1,5 +1,9 @@
 #include "CelestialBody.h"
 
+CelestialBody::CelestialBody()
+{
+}
+
 CelestialBody::CelestialBody(CBParam param, char *planetName, bool isSun, Timer& timer, vector<CelestialBody> satellites)
 {
 }

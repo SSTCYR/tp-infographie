@@ -1,5 +1,8 @@
 #include "Camera.h"
 
+Camera::Camera()
+{
+}
 
 Camera::Camera(CelestialBody focus) : m_CurrentFocus(focus)
 {
