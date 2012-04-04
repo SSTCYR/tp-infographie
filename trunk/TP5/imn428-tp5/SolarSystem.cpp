@@ -9,6 +9,6 @@ SolarSystem::~SolarSystem(void)
 {
 }
 
-void SolarSystem::RenderScene()
+void SolarSystem::StartScene()
 {
 }

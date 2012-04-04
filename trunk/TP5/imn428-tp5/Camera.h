@@ -19,7 +19,8 @@ public:
 	Camera(CelestialBody focus);
 	~Camera();
 	void KeyboardFunc();
-	void MouseFunc();
+	void MouseMoveFunc();
+	void MouseClickFunc();
 };
 
 #endif // CAMERA_H
