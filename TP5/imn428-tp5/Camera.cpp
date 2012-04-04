@@ -29,6 +29,10 @@ void Camera::KeyboardFunc()
 {
 }
 
-void Camera::MouseFunc()
+void Camera::MouseMoveFunc()
+{
+}
+
+void Camera::MouseClickFunc()
 {
 }

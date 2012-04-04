@@ -92,7 +92,7 @@
     <ClInclude Include="SolarSystem.h" />
     <ClInclude Include="SolarSystemTimer.h" />
     <ClInclude Include="Source\SolarSystem_Config.h" />
-    <ClInclude Include="Utility.h" />
+    <ClInclude Include="Structs.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

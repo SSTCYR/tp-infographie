@@ -18,7 +18,7 @@ private:
 public:
 	SolarSystem();
 	~SolarSystem();
-	void RenderScene();
+	void StartScene();
 };
 
 #endif // SOLAR_SYSTEM_H

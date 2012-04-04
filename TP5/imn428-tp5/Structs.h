@@ -1,5 +1,5 @@
-#ifndef UTILITY_H
-#define UTILITY_H
+#ifndef STRUCTS_H
+#define STRUCTS_H
 
 typedef struct
 {
@@ -32,4 +32,4 @@ typedef struct
 
 } Light;
 
-#endif // UTILITY_H
+#endif // STRUCTS_H
