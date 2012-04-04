@@ -25,3 +25,5 @@ vector<CelestialBody> CelestialBody::GetSatellites()
 }
 
 void CelestialBody::Update()
+{
+}
