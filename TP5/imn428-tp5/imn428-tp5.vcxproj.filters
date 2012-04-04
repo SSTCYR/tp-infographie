@@ -18,9 +18,15 @@
     <ClCompile Include="imn428-tp5.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="SolarSystemTimer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\SolarSystem_Config.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SolarSystemTimer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
