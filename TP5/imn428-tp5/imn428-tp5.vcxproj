@@ -76,6 +76,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="BitmapHandling.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CelestialBody.cpp" />
     <ClCompile Include="ColorRGB.cpp" />
@@ -86,6 +87,7 @@
     <ClCompile Include="Utility.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BitmapHandling.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CelestialBody.h" />
     <ClInclude Include="ColorRGB.h" />

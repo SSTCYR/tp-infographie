@@ -1,4 +1,4 @@
-#include "RGBImage.h"
+#include "BitmapHandling.h"
 #include "SolarSystem.h"
 #include "SolarSystem_Config.h"
 
@@ -52,7 +52,7 @@ SolarSystem::SolarSystem()
 
 	m_Sun = sun;
 
-	LoadBmp("", m_SkyBox);
+	LoadBmp("Resources/texture_starbg.bmp", m_SkyBox);
 }
 
 SolarSystem::~SolarSystem()
