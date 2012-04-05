@@ -1,6 +1,17 @@
 #ifndef STRUCTS_H
 #define STRUCTS_H
 
+#define GLUT_DISABLE_ATEXIT_HACK
+
+#ifdef __APPLE__
+	#include <GLUT/glut.h>
+#else
+	#include <windows.h>
+	#include <GL/gl.h>
+	#include <GL/glu.h>
+	#include "Glut/GLUT.h"
+#endif
+
 typedef struct
 {
 	double X;
@@ -18,17 +29,17 @@ typedef struct
 
 typedef struct
 {
-	GLenum	lightID;		//GL_LIGHT0, GL_LIGHT1, etc.
-	GLfloat	ambient[4]; 	//Couleur pour la composante ambiante
-	GLfloat	diffuse[4];		//Couleur pour la composante diffuse
-	GLfloat	specular[4];	//Couleur pour la composante speculaire
-	GLfloat	position[4];	//Position
+	GLenum	lightID;
+	GLfloat	ambient[4];
+	GLfloat	diffuse[4];
+	GLfloat	specular[4];
+	GLfloat	position[4];
 
-	GLfloat Kc;	//Facteur d'attenuation constante
-	GLfloat Kl;	//Facteur d'attenuation linaire
-	GLfloat Kq;	//Facteur d'attenuation quadratique
+	GLfloat Kc;
+	GLfloat Kl;
+	GLfloat Kq;
 
-	bool	on; // allumée ou fermée
+	bool	on;
 
 } Light;
 

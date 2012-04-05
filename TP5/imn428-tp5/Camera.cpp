@@ -24,15 +24,3 @@ void Camera::Rotate()
 void Camera::Zoom()
 {
 }
-
-void Camera::KeyboardFunc()
-{
-}
-
-void Camera::MouseMoveFunc()
-{
-}
-
-void Camera::MouseClickFunc()
-{
-}

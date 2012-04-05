@@ -5,12 +5,15 @@
 
 using namespace std;
 
-// TODO : Transform into a singleton
 class Timer
 {
+private:
+	static Timer *m_Instance;
+    Timer();
+	Timer(const Timer& timer);
+	void operator=(const Timer& timer);
 public:
-
-	Timer();
+	static Timer *GetInstance();
 
 	//Resets the timer's reference time & lap time.
 	void	ResetTimer();
