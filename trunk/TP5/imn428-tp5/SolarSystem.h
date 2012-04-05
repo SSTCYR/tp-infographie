@@ -12,7 +12,7 @@ class SolarSystem
 {
 private:
 	CelestialBody m_Sun;
-	Timer m_Timer;
+	Timer *m_Timer;
 	Camera m_Camera;
 	RGBImage m_SkyBox;
 public:

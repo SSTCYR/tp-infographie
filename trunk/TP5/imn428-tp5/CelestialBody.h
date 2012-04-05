@@ -5,39 +5,33 @@
 
 #include "RGBImage.h"
 #include "SolarSystemTimer.h"
-#include "Utility.h"
+#include "Structs.h"
 
 using std::vector;
-
-struct CBParam
-{
-	float radius;
-	float orbitRadius;
-	float revolution;
-	float rotation;
-
-	CBParam(float rad, float oRad, float rev, float rot) : 
-	radius(rad), orbitRadius(oRad), revolution(rev), rotation(rot) {}
-};
 
 class CelestialBody
 {
 private:
-	bool m_IsSun;
 	bool m_HasRing;
+	float m_Radius;
+	float m_OrbitRadius;
+	float m_Revolution;
+	float m_Rotation;
 	Position m_Position;
 	RGBImage m_Texture;
 	RGBImage m_Ring;
-	Timer m_Timer;
+	Timer *m_Timer;
+	vector<CelestialBody> m_Satellites;
 
 	void InitRing();
 public:
 	CelestialBody();
-	CelestialBody(CBParam param, char *planetName, bool isSun, Timer& timer, vector<CelestialBody> satellites);
-	CelestialBody(CBParam param, char *planetName, Timer& timer, bool hasRing);
+	CelestialBody(float radius,	float orbitRadius, float revolution, float rotation, char *planetName, Timer *timer, bool hasRing);
+	CelestialBody(float radius,	float orbitRadius, float revolution, float rotation, char *planetName, Timer *timer, vector<CelestialBody> satellites);
+	CelestialBody(float radius,	float orbitRadius, float rotation, char *planetName, Timer *timer, vector<CelestialBody> satellites);
 	~CelestialBody();  
-	Position GetPosition();
-	vector<CelestialBody> GetSatellites();
+	Position GetPosition() const; 
+	vector<CelestialBody> GetSatellites() const;
 	void Update();
 };
 

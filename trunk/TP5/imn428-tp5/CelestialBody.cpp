@@ -4,11 +4,18 @@ CelestialBody::CelestialBody()
 {
 }
 
-CelestialBody::CelestialBody(CBParam param, char *planetName, bool isSun, Timer& timer, vector<CelestialBody> satellites)
+CelestialBody::CelestialBody(float radius,	float orbitRadius, float revolution, float rotation, char *planetName, Timer *timer, bool hasRing) :
+m_Radius(radius), m_OrbitRadius(orbitRadius), m_Revolution(revolution), m_Rotation(rotation)
 {
 }
 
-CelestialBody::CelestialBody(CBParam param, char *planetName, Timer& timer, bool hasRing)
+CelestialBody::CelestialBody(float radius,	float orbitRadius, float revolution, float rotation, char *planetName, Timer *timer, vector<CelestialBody> satellites) :
+m_Radius(radius), m_OrbitRadius(orbitRadius), m_Revolution(revolution), m_Rotation(rotation), m_Satellites(satellites)
+{
+}
+
+CelestialBody::CelestialBody(float radius,	float orbitRadius, float rotation, char *planetName, Timer *timer, vector<CelestialBody> satellites) :
+m_Radius(radius), m_OrbitRadius(orbitRadius), m_Rotation(rotation), m_Satellites(satellites)
 {
 }
 
@@ -20,12 +27,14 @@ void CelestialBody::InitRing()
 {
 }
 
-Position CelestialBody::GetPosition()
+inline Position CelestialBody::GetPosition() const
 {
+	return m_Position;
 }
 
-vector<CelestialBody> CelestialBody::GetSatellites()
+inline vector<CelestialBody> CelestialBody::GetSatellites() const
 {
+	return m_Satellites;
 }
 
 void CelestialBody::Update()
