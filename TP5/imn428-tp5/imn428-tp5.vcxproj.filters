@@ -36,10 +36,10 @@
     <ClCompile Include="RGBImage.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Utility.cpp">
+    <ClCompile Include="BitmapHandling.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="BitmapHandling.cpp">
+    <ClCompile Include="SolarSystemManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -68,10 +68,10 @@
     <ClInclude Include="Structs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Utility.h">
+    <ClInclude Include="BitmapHandling.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="BitmapHandling.h">
+    <ClInclude Include="SolarSystemManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
