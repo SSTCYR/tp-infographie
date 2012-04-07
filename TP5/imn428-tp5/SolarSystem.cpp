@@ -40,13 +40,13 @@ SolarSystem::SolarSystem()
 	satellites.clear();
 	satellites.push_back(mercury);
 	satellites.push_back(venus);
-	satellites.push_back(earth);
-	satellites.push_back(mars);
-	satellites.push_back(jupiter);
-	satellites.push_back(saturn);
-	satellites.push_back(uranus);
-	satellites.push_back(neptune);
-	satellites.push_back(pluto);
+	//satellites.push_back(earth);
+	//satellites.push_back(mars);
+	//satellites.push_back(jupiter);
+	//satellites.push_back(saturn);
+	//satellites.push_back(uranus);
+	//satellites.push_back(neptune);
+	//satellites.push_back(pluto);
 	CelestialBody sun(SUN_EQUATOR_RADIUS, SUN_ORBIT_RADIUS, SUN_ROTATION_PERIOD, 
 		"sun", m_Timer, satellites);
 
