@@ -1,17 +1,8 @@
 #include "SolarSystemTimer.h"
 
-Timer *Timer::m_Instance = 0;
-
 Timer::Timer()
 {
 	ResetTimer();
-}
-
-Timer *Timer::GetInstance()
-{
-	if(!m_Instance)
-		m_Instance = new Timer();
-	return m_Instance;
 }
 
 void Timer::ResetTimer()

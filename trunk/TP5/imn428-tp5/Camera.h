@@ -21,7 +21,7 @@ private:
 	bool m_IsFixed;
 	CelestialBody m_CurrentFocus;
 	Position m_Position;
-	static Camera *m_Instance;
+
 	GLfloat	m_Theta;	
 	GLfloat	m_Phi;	
 	GLfloat	m_Distance;		
@@ -30,11 +30,8 @@ private:
 	GLfloat m_Znear;   
 	GLfloat m_Zfar;
 	
-	Camera();
-	Camera(const Camera& cam);
-	void operator=(const Camera& cam);
 public:
-	static Camera *GetInstance();
+	Camera();
 	~Camera();
 	
 	void ChangeFocus(int planetIndex, bool fixed);
