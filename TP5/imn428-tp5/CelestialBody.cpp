@@ -47,6 +47,13 @@ void CelestialBody::Construct(float radius, float orbitRadius, float revolution,
 	strcat(textureName, ".bmp");
 
 	LoadBmp(textureName, m_Texture);
+
+	glGenTextures(1, &m_TextureId);
+	glBindTexture(GL_TEXTURE_2D, m_TextureId);
+	glTexImage2D(GL_TEXTURE_2D, 0, 3, m_Texture.GetWidth(), m_Texture.GetHeight(), 0, GL_RGB, GL_FLOAT, m_Texture.GetRasterData());
+
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
 }
 
 // TODO : Add some sciency magic to update its position and camera position
@@ -62,6 +69,8 @@ void CelestialBody::Update(float elapsedTime)
 void CelestialBody::Draw(Position centerOfRevolution)
 {
 	glPushMatrix();
+
+		glBindTexture(GL_TEXTURE_2D, m_TextureId);	
 
 		glTranslatef(m_Radius, 0, 0);
 
