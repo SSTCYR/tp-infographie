@@ -24,7 +24,7 @@ CelestialBody::CelestialBody(float radius,	float orbitRadius, float revolution, 
 
 CelestialBody::CelestialBody(float radius,	float orbitRadius, float revolution, float rotation, char *planetName, CelestialBody *satellite) : m_Satellite(satellite)
 {
-	CelestialBody(radius, orbitRadius, revolution, rotation, planetName, false);
+	CelestialBody(radius, orbitRadius, revolution, rotation, planetName);
 }
 
 CelestialBody::~CelestialBody()
@@ -41,7 +41,12 @@ void CelestialBody::Construct(float radius, float orbitRadius, float revolution,
 	m_Position.Y = 0;
 	m_Position.Z = 0;
 
-	LoadBmp(strcat(strcat("Resources/texture_", planetName), ".bmp"), m_Texture);
+	char textureName[30];
+	strcpy(textureName, "Resources/texture_");
+	strcat(textureName, planetName);
+	strcat(textureName, ".bmp");
+
+	LoadBmp(textureName, m_Texture);
 }
 
 // TODO : Add some sciency magic to update its position and camera position

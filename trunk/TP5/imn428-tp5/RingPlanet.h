@@ -7,6 +7,7 @@ class RingPlanet : public CelestialBody
 {
 private:
 	RGBImage m_Ring;
+protected:
 	void Draw(Position centerOfRevolution);
 	void Construct(float radius, float orbitRadius, float revolution, float rotation, char *planetName);
 public:

@@ -22,6 +22,12 @@ void RingPlanet::Draw(Position centerOfRevolution)
 
 void RingPlanet::Construct(float radius, float orbitRadius, float revolution, float rotation, char *planetName)
 {
-	LoadBmp(strcat(strcat("Resources/ring_", planetName), ".bmp"), m_Ring);
 	CelestialBody::Construct(radius, orbitRadius, revolution, rotation, planetName);
+
+	char ringName[30];
+	strcpy(ringName, "Resources/ring_");
+	strcat(ringName, planetName);
+	strcat(ringName, ".bmp");
+
+	LoadBmp(ringName, m_Ring);
 }
