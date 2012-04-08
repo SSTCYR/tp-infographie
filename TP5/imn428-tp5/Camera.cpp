@@ -8,10 +8,6 @@ Camera::~Camera()
 {
 }
 
-void Camera::ChangeFocus(int planetIndex, bool fixed)
-{
-}
-
 void Camera::Rotate(int x, int y)
 {
 	m_Theta -= x;

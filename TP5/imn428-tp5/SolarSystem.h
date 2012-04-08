@@ -20,7 +20,7 @@ public:
 	~SolarSystem();
 	
 	void UpdateScene(float elapsedTime);
-	Vector<CelestialBody> GetBodies() const;
+	vector<CelestialBody> GetBodies() const;
 };
 
 #endif // SOLAR_SYSTEM_H
