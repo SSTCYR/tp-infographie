@@ -4,7 +4,7 @@
 
 SolarSystem::SolarSystem()
 {
-	m_Timer = Timer::GetInstance();
+	/*m_Timer = Timer::GetInstance();
 
 	CelestialBody mercury(MERCURY_EQUATOR_RADIUS, MERCURY_ORBIT_RADIUS, MERCURY_REVO_PERIOD, MERCURY_ROTATION_PERIOD, 
 		"mercury", m_Timer, false);
@@ -52,7 +52,7 @@ SolarSystem::SolarSystem()
 
 	m_Sun = sun;
 
-	LoadBmp("Resources/texture_starbg.bmp", m_SkyBox);
+	LoadBmp("Resources/texture_starbg.bmp", m_SkyBox);*/
 }
 
 SolarSystem::~SolarSystem()
@@ -60,6 +60,6 @@ SolarSystem::~SolarSystem()
 
 }
 
-void SolarSystem::StartScene()
+void SolarSystem::UpdateScene(float elapsedTime)
 {
 }

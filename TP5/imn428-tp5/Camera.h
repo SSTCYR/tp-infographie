@@ -18,8 +18,6 @@
 class Camera
 {
 private:
-	bool m_IsFixed;
-	CelestialBody m_CurrentFocus;
 	Position m_Position;
 
 	GLfloat	m_Theta;	
@@ -29,12 +27,12 @@ private:
 	GLfloat m_Ratio;  
 	GLfloat m_Znear;   
 	GLfloat m_Zfar;
-	
 public:
 	Camera();
 	~Camera();
-	
-	void ChangeFocus(int planetIndex, bool fixed);
+	Position GetPostion() const;
+
+	void Update();
 	void Rotate(int x, int y);
 	void Zoom(int distance);
 };

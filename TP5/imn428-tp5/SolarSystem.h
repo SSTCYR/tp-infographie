@@ -8,17 +8,19 @@
 #include "RGBImage.h"
 #include "SolarSystemTimer.h"
 
+using std::vector;
+
 class SolarSystem
 {
 private:
-	CelestialBody m_Sun;
-	Timer *m_Timer;
-	Camera *m_Camera;
+	vector<CelestialBody> m_Bodies;
 	RGBImage m_SkyBox;
 public:
 	SolarSystem();
 	~SolarSystem();
-	void StartScene();
+	
+	void UpdateScene(float elapsedTime);
+	Vector<CelestialBody> GetBodies() const;
 };
 
 #endif // SOLAR_SYSTEM_H
