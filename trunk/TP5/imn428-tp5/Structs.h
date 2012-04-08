@@ -12,12 +12,14 @@
 	#include "Glut/GLUT.h"
 #endif
 
-typedef struct
+struct Position
 {
 	double X;
 	double Y;
 	double Z;
-} Position;
+
+	Position() : X(0), Y(0), Z(0) { }
+};
 
 typedef struct 
 {
