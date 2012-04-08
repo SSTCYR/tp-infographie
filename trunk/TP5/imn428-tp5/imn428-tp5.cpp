@@ -19,18 +19,22 @@ int main(int argc, char* argv[])
 	// Initialisation de la fenetre
 	glutInitWindowPosition(0, 0);
 	glutInitWindowSize(640, 480);
-	glEnable(GL_DEPTH_TEST);
-	glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GL_DEPTH);
+	glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
+
+	// Creation de la fenetre
 	glutCreateWindow("Solar System");
+	glClearColor(0.0, 0.0, 0.0, 0.0);
+    glEnable(GL_DEPTH_TEST);
 
 	// Initialisation des fonctions de rappel
+	glutDisplayFunc(DisplayFunc);
 	glutMouseFunc(MouseClickFunc);
 	glutMotionFunc(MouseMoveFunc);
 	glutKeyboardFunc(KeyboardFunc);
-	glutDisplayFunc(DisplayFunc);
 
 	// Initialisation de la camera
 
+	// Demarrage du programme
 	glutMainLoop();
 
 	delete manager;
