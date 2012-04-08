@@ -14,6 +14,7 @@ protected:
 	float m_Rotation;
 	Position m_Position;
 	RGBImage m_Texture;
+	unsigned int m_TextureId;
 	CelestialBody *m_Satellite;
 
 	virtual void Draw(Position centerOfRevolution);
