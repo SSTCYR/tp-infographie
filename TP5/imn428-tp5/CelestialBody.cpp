@@ -79,12 +79,12 @@ void CelestialBody::Draw(Position centerOfRevolution)
 	glPopMatrix();
 }
 
-inline Position CelestialBody::GetPosition() const
+Position CelestialBody::GetPosition() const
 {
 	return m_Position;
 }
 
-inline float CelestialBody::GetOrbitRadius() const
+float CelestialBody::GetOrbitRadius() const
 {
 	return m_OrbitRadius;
 }

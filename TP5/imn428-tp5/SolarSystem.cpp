@@ -44,7 +44,7 @@ void SolarSystem::UpdateScene(float elapsedTime)
 	}
 }
 
-inline vector<CelestialBody> SolarSystem::GetBodies() const
+vector<CelestialBody> SolarSystem::GetBodies() const
 {
 	return m_Bodies;
 }
