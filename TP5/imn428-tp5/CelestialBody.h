@@ -14,7 +14,6 @@ protected:
 	float m_Rotation;
 	Position m_Position;
 	RGBImage m_Texture;
-	RGBImage m_Billboard;
 	CelestialBody *m_Satellite;
 
 	virtual void Draw(Position centerOfRevolution);
@@ -23,7 +22,6 @@ public:
 	CelestialBody();
 	CelestialBody(float radius,	float orbitRadius, float revolution, float rotation, char *planetName);
 	CelestialBody(float radius,	float orbitRadius, float revolution, float rotation, char *planetName, CelestialBody *satellite);
-	CelestialBody(float radius,	float orbitRadius, float rotation, char *planetName);
 	virtual ~CelestialBody();  
 	void Update(float elapsedTime);
 

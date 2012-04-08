@@ -20,19 +20,11 @@ CelestialBody::CelestialBody()
 CelestialBody::CelestialBody(float radius,	float orbitRadius, float revolution, float rotation, char *planetName)
 {
 	Construct(radius, orbitRadius, revolution, rotation, planetName);
-	
-		LoadBmp(strcat(strcat("Resources/ring_", planetName), ".bmp"), m_Ring);
 }
 
 CelestialBody::CelestialBody(float radius,	float orbitRadius, float revolution, float rotation, char *planetName, CelestialBody *satellite) : m_Satellite(satellite)
 {
 	CelestialBody(radius, orbitRadius, revolution, rotation, planetName, false);
-}
-
-CelestialBody::CelestialBody(float radius,	float orbitRadius, float rotation, char *planetName) :
-m_Radius(radius), m_OrbitRadius(orbitRadius), m_Rotation(rotation)
-{
-	LoadBmp(strcat(strcat("Resources/billboard_", planetName), ".bmp"), m_Billboard);
 }
 
 CelestialBody::~CelestialBody()
