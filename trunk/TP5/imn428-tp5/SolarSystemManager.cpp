@@ -58,6 +58,11 @@ void SolarSystemManager::MouseMoveFunc(int x, int y)
 {
 }
 
+// TODO : Update with a real elapsed time value
 void SolarSystemManager::DisplayFunc()
 {
+	for(int i = 0; i < m_SolarSystem.GetBodies().size(); i++)
+	{
+		m_SolarSystem.GetBodies()[i].Update(0.0);
+	}
 }
