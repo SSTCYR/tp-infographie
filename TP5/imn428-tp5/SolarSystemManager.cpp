@@ -11,26 +11,9 @@
 
 #include "SolarSystemManager.h"
 
-SolarSystemManager::SolarSystemManager(int argc, char **argv, SolarSystem ss) : m_SolarSystem(ss)
+SolarSystemManager::SolarSystemManager(SolarSystem ss) : m_SolarSystem(ss)
 {
-	// Initialisation de GLUT
-	glutInit(&argc, argv);
-
-	// Initialisation de la fenetre
-	glutInitWindowPosition(0, 0);
-	glutInitWindowSize(640, 480);
-	glEnable(GL_DEPTH_TEST);
-	glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GL_DEPTH);
-
-	// Initialisation des fonctions de rappel
-	glutMouseFunc(MouseClickFunc);
-	glutMotionFunc(MouseMoveFunc);
-	glutKeyboardFunc(KeyboardFunc);
-	glutDisplayFunc(DisplayFunc);
-
-	// Initialisation de la camera
-
-	glutMainLoop();
+	
 }
 
 void SolarSystemManager::KeyboardFunc(unsigned char key, int x, int y)

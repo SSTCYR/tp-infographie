@@ -6,10 +6,26 @@ Sun::Sun()
 
 Sun::Sun(float radius, float orbitRadius, float rotation, char *planetName)
 {
-	LoadBmp(strcat(strcat("Resources/billboard_", planetName), ".bmp"), m_Billboard);
-	CelestialBody::Construct(radius, 0, rotation, 0, planetName);
+	Construct(radius, orbitRadius, rotation, planetName);
 }
 
 Sun::~Sun(void)
 {
+}
+
+void Sun::Draw(Position centerOfRevolution)
+{
+	CelestialBody::Draw(centerOfRevolution);
+}
+
+void Sun::Construct(float radius, float orbitRadius, float rotation, char *planetName)
+{
+	CelestialBody::Construct(radius, 0, rotation, 0, planetName);
+	
+	char billboardName[30];
+	strcpy(billboardName, "Resources/billboard_");
+	strcat(billboardName, planetName);
+	strcat(billboardName, ".bmp");
+
+	LoadBmp(billboardName, m_Billboard);
 }
