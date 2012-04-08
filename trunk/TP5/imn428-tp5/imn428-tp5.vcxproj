@@ -91,6 +91,7 @@
     <ClCompile Include="SolarSystem.cpp" />
     <ClCompile Include="SolarSystemTimer.cpp" />
     <ClCompile Include="SolarSystemManager.cpp" />
+    <ClCompile Include="Sun.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BitmapHandling.h" />
@@ -104,6 +105,7 @@
     <ClInclude Include="Source\SolarSystem_Config.h" />
     <ClInclude Include="Structs.h" />
     <ClInclude Include="SolarSystemManager.h" />
+    <ClInclude Include="Sun.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
