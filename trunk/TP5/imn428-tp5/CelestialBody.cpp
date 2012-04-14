@@ -17,29 +17,30 @@ CelestialBody::CelestialBody()
 {
 }
 
-CelestialBody::CelestialBody(float radius,	float orbitRadius, float revolution, float rotation, char *planetName)
+CelestialBody::CelestialBody(float radius,	float orbitRadius, float revolution, float rotation, char *planetName, unsigned int texId)
 {
-	Construct(radius, orbitRadius, revolution, rotation, planetName);
+	Construct(radius, orbitRadius, revolution, rotation, planetName, texId);
 }
 
-CelestialBody::CelestialBody(float radius,	float orbitRadius, float revolution, float rotation, char *planetName, CelestialBody *satellite) : m_Satellite(satellite)
+CelestialBody::CelestialBody(float radius,	float orbitRadius, float revolution, float rotation, char *planetName, unsigned int texId, CelestialBody *satellite) : m_Satellite(satellite)
 {
-	CelestialBody(radius, orbitRadius, revolution, rotation, planetName);
+	CelestialBody(radius, orbitRadius, revolution, rotation, planetName, texId);
 }
 
 CelestialBody::~CelestialBody()
 {
 }
 
-void CelestialBody::Construct(float radius, float orbitRadius, float revolution, float rotation, char *planetName)
+void CelestialBody::Construct(float radius, float orbitRadius, float revolution, float rotation, char *planetName, unsigned int texId)
 {
-	m_Radius = radius;
-	m_OrbitRadius = orbitRadius;
-	m_Revolution = revolution;
-	m_Rotation = rotation;
+	m_Radius = radius*MULTIPLIER_EQUAT_RAD;
+	m_OrbitRadius = orbitRadius*MULTIPLIER_ORBIT_RAD;
+	m_Revolution = revolution*MULTIPLIER_REVOL_PER;
+	m_Rotation = rotation*MULTIPLIER_ROTAT_PER;
 	m_Position.X = 0;
 	m_Position.Y = 0;
 	m_Position.Z = 0;
+	m_TextureId = texId;
 
 	char textureName[30];
 	strcpy(textureName, "Resources/texture_");
@@ -54,6 +55,7 @@ void CelestialBody::Construct(float radius, float orbitRadius, float revolution,
 
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+
 }
 
 // TODO : Add some sciency magic to update its position and camera position
@@ -68,12 +70,21 @@ void CelestialBody::Update(float elapsedTime)
 // TODO : Draw satellite when needed
 void CelestialBody::Draw(Position centerOfRevolution)
 {
+	float		gtf_PlanetAmbient[4]	= {0.3f, 0.3f, 0.3f, 1.0f};
+	float		gtf_PlanetDiffuse[4]	= {1.0f, 1.0f, 1.0f, 1.0f};
+	float		gtf_PlanetEmission[4]	= {0,0,0,0};
+
 	glPushMatrix();
 
+
+		glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT,gtf_PlanetAmbient);
+		glMaterialfv(GL_FRONT_AND_BACK,GL_DIFFUSE,gtf_PlanetDiffuse);
+		glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,gtf_PlanetEmission);
+		glMaterialf(GL_FRONT_AND_BACK,GL_SHININESS,0);
 		glBindTexture(GL_TEXTURE_2D, m_TextureId);	
 
-		glTranslatef(m_Radius, 0, 0);
-
+		glTranslatef(m_OrbitRadius, 0, 0);
+		
 		GLUquadricObj *po_SphereMesh = gluNewQuadric();
 
 		gluQuadricDrawStyle(po_SphereMesh,GLU_FILL);
@@ -81,8 +92,9 @@ void CelestialBody::Draw(Position centerOfRevolution)
 		gluQuadricTexture(po_SphereMesh,GLU_FALSE);
 		gluQuadricOrientation(po_SphereMesh,GLU_OUTSIDE);
 
+		
 		gluSphere(po_SphereMesh,m_Radius,60,60);
-
+		
 		gluDeleteQuadric(po_SphereMesh);
 
 	glPopMatrix();
