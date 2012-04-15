@@ -2,9 +2,10 @@
  
  TP4: courbes parametriques
  
- Nom1:
- Nom2:
- Nom3:
+ Nom1: Félix-Antoine Ouellet 09 137 551
+ Nom2: Jean-Philippe Ouellet 11 057 955
+ Nom3: Alexandre Bizeau      11 109 837
+ Nom4: Francois Rheault      11 040 348
  
 */
 
