@@ -88,7 +88,6 @@
     <ClCompile Include="imn428-tp5.cpp" />
     <ClCompile Include="RGBImage.cpp" />
     <ClCompile Include="RingPlanet.cpp" />
-    <ClCompile Include="SolarSystem.cpp" />
     <ClCompile Include="SolarSystemTimer.cpp" />
     <ClCompile Include="SolarSystemManager.cpp" />
     <ClCompile Include="Sun.cpp" />
@@ -100,7 +99,6 @@
     <ClInclude Include="ColorRGB.h" />
     <ClInclude Include="RGBImage.h" />
     <ClInclude Include="RingPlanet.h" />
-    <ClInclude Include="SolarSystem.h" />
     <ClInclude Include="SolarSystemTimer.h" />
     <ClInclude Include="Source\SolarSystem_Config.h" />
     <ClInclude Include="Structs.h" />
