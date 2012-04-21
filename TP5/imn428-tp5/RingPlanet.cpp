@@ -15,9 +15,9 @@ RingPlanet::~RingPlanet()
 }
 
 // TODO : Draw ring
-void RingPlanet::Draw(Position centerOfRevolution, unsigned int textId)
+void RingPlanet::Update(float elapsedTime)
 {
-	CelestialBody::Draw(centerOfRevolution, textId);
+	CelestialBody::Update(elapsedTime);
 }
 
 void RingPlanet::Construct(float radius, float orbitRadius, float revolution, float rotation, char *planetName)

@@ -9,9 +9,12 @@
 	#include "Glut/GLUT.h"
 #endif
 
+#define PI							3.14159265358
+
 #include <string>
 #include "CelestialBody.h"
 #include "BitmapHandling.h"
+#include <cmath>
 
 CelestialBody::CelestialBody()
 {
@@ -37,67 +40,52 @@ void CelestialBody::Construct(float radius, float orbitRadius, float revolution,
 	m_OrbitRadius = orbitRadius*MULTIPLIER_ORBIT_RAD;
 	m_Revolution = revolution*MULTIPLIER_REVOL_PER;
 	m_Rotation = rotation*MULTIPLIER_ROTAT_PER;
-	m_Position.X = 0;
+	m_Position.X = m_OrbitRadius;
 	m_Position.Y = 0;
 	m_Position.Z = 0;
+	m_Angle = 0;
+	m_RotationTime = 0;
 	m_PlanetName = planetName;
-	/*
-	char textureName[30];
-	strcpy(textureName, "Resources/texture_");
-	strcat(textureName, planetName);
-	strcat(textureName, ".bmp");
-
-	LoadBmp(textureName, m_Texture);
-
-	glGenTextures(1, &m_TextureId);
-	glBindTexture(GL_TEXTURE_2D, m_TextureId);
-	glTexImage2D(GL_TEXTURE_2D, 0, 3, m_Texture.GetWidth(), m_Texture.GetHeight(), 0, GL_RGB, GL_FLOAT, m_Texture.GetRasterData());
-
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-	*/
 }
 
-// TODO : Add some sciency magic to update its position and camera position
-void CelestialBody::Update(float elapsedTime, unsigned int textId)
-{
-	Draw(Position(), textId);
-}
-
-// TODO : Add revolution and rotation movement
-// TODO : Add ring
-// TODO : Add billboard for the sun
 // TODO : Draw satellite when needed
-void CelestialBody::Draw(Position centerOfRevolution, unsigned int textId)
+void CelestialBody::Update(float elapsedTime)
 {
-	float		gtf_PlanetAmbient[4]	= {0.3f, 0.3f, 0.3f, 1.0f};
-	float		gtf_PlanetDiffuse[4]	= {1.0f, 1.0f, 1.0f, 1.0f};
-	float		gtf_PlanetEmission[4]	= {0,0,0,0};
+	float theta = elapsedTime/m_Revolution*PI*2;
+	m_Position.Z = m_Position.Z*cos(theta) - m_Position.X*sin(theta);
+	m_Position.X = m_Position.Z*sin(theta) + m_Position.X*cos(theta);
 
-	glPushMatrix();
+	m_RotationTime += elapsedTime;
 
+	if(m_RotationTime > m_Rotation)
+	{
+		m_RotationTime -= m_Rotation;
+	}
 
-		glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT,gtf_PlanetAmbient);
-		glMaterialfv(GL_FRONT_AND_BACK,GL_DIFFUSE,gtf_PlanetDiffuse);
-		glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,gtf_PlanetEmission);
-		glMaterialf(GL_FRONT_AND_BACK,GL_SHININESS,0);
-		glBindTexture(GL_TEXTURE_2D, textId);
+	m_Angle = m_RotationTime / m_Rotation * 360.0;
+}
 
-		glTranslatef(m_OrbitRadius, 0, 0);
-		
-		GLUquadricObj *po_SphereMesh = gluNewQuadric();
+//TODO : les bonnes couleurs de lignes
+void CelestialBody::DrawOrbit()
+{
+	float posX, posY, posZ, theta;
+	posX = m_OrbitRadius;
+	posY = 0;
+	posZ = 0;
 
-		gluQuadricDrawStyle(po_SphereMesh,GLU_FILL);
-		gluQuadricNormals(po_SphereMesh,GLU_SMOOTH);
-		gluQuadricTexture(po_SphereMesh,GLU_FALSE);
-		gluQuadricOrientation(po_SphereMesh,GLU_OUTSIDE);
-
-		
-		gluSphere(po_SphereMesh,m_Radius,60,60);
-		
-		gluDeleteQuadric(po_SphereMesh);
-
-	glPopMatrix();
+	glLineWidth(5);
+	glColor4f(1,1,1,1);
+	glBegin(GL_LINES);
+	{
+		for(int i = 0; i<3600; i++)
+		{
+			glVertex3f(posX, posY, posZ);
+			posX = m_Position.Z*cos(i/1800*PI) - m_Position.X*sin(i/1800*PI);
+			posZ = m_Position.Z*sin(i/1800*PI) + m_Position.X*cos(i/1800*PI);
+			glVertex3f(posX, posY, posZ);
+		}
+	}
+	glEnd();
 }
 
 Position CelestialBody::GetPosition() const
@@ -108,6 +96,26 @@ Position CelestialBody::GetPosition() const
 float CelestialBody::GetOrbitRadius() const
 {
 	return m_OrbitRadius;
+}
+
+float CelestialBody::GetRadius() const
+{
+	return m_Radius;
+}
+
+float CelestialBody::GetRotation() const
+{
+	return m_Rotation;
+}
+
+float CelestialBody::GetRevolution() const
+{
+	return m_Revolution;
+}
+
+float CelestialBody::GetAngle() const
+{
+	return m_Angle;
 }
 
 char* CelestialBody::GetPlanetName() const

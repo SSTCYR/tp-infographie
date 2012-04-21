@@ -9,12 +9,12 @@ private:
 	RGBImage m_Ring;
 	unsigned int m_RingId;
 protected:
-	void Draw(Position centerOfRevolution, unsigned int textId);
 	void Construct(float radius, float orbitRadius, float revolution, float rotation, char *planetName);
 public:
 	RingPlanet();
 	RingPlanet(float radius, float orbitRadius, float revolution, float rotation, char *planetName);
 	~RingPlanet();
+	void Update(float elapsedTime);
 };
 
 #endif // RING_PLANET_H

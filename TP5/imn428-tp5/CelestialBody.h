@@ -14,22 +14,28 @@ protected:
 	float m_Revolution;
 	float m_Rotation;
 	Position m_Position;
+	float m_Angle;
+	float m_RotationTime;
 	char *m_PlanetName;
-	//RGBImage m_Texture;
 	CelestialBody *m_Satellite;
-	//unsigned int m_TextureId;
 
-	virtual void Draw(Position centerOfRevolution, unsigned int textId);
 	virtual void Construct(float radius, float orbitRadius, float revolution, float rotation, char *planetName);
 public:
 	CelestialBody();
 	CelestialBody(float radius,	float orbitRadius, float revolution, float rotation, char *planetName);
 	CelestialBody(float radius,	float orbitRadius, float revolution, float rotation, char *planetName, CelestialBody *satellite);
-	virtual ~CelestialBody();  
-	void Update(float elapsedTime, unsigned int textId);
+	virtual ~CelestialBody(); 
+
+	virtual void Update(float elapsedTime);
+
+	void DrawOrbit();
 
 	Position GetPosition() const;
 	float GetOrbitRadius() const;
+	float GetRadius() const;
+	float GetRotation() const;
+	float GetRevolution() const;
+	float GetAngle() const;
 	char* GetPlanetName() const;
 };
 
