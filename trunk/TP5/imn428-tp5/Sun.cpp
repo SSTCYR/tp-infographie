@@ -13,9 +13,9 @@ Sun::~Sun(void)
 {
 }
 
-void Sun::Draw(Position centerOfRevolution)
+void Sun::Draw(Position centerOfRevolution, unsigned int textId)
 {
-	CelestialBody::Draw(centerOfRevolution);
+	CelestialBody::Draw(centerOfRevolution, textId);
 }
 
 void Sun::Construct(float radius, float orbitRadius, float rotation, char *planetName)
