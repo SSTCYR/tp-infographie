@@ -13,19 +13,12 @@ Sun::~Sun(void)
 {
 }
 
-void Sun::Draw(Position centerOfRevolution, unsigned int textId)
+void Sun::Update(float elapsedTime)
 {
-	CelestialBody::Draw(centerOfRevolution, textId);
+	CelestialBody::Update(elapsedTime);
 }
 
 void Sun::Construct(float radius, float orbitRadius, float rotation, char *planetName)
 {
-	CelestialBody::Construct(radius, 0, rotation, 0, planetName);
-	
-	char billboardName[30];
-	strcpy(billboardName, "Resources/billboard_");
-	strcat(billboardName, planetName);
-	strcat(billboardName, ".bmp");
-
-	LoadBmp(billboardName, m_Billboard);
+	CelestialBody::Construct(radius, 0, 1, rotation, planetName);
 }
