@@ -38,6 +38,8 @@ void		MouseClickFunc(int button, int state, int x, int y);
 void		SetcurrentKey(int key);
 int			GetcurrentKey();
 
+int*		UpdateCameraLookAt();
+
 const int	gs32_WindowWidth	= 960;
 const int	gs32_WindowHeight	= 600;
 const float	gf_FieldofViewY		= 62.7375f;
@@ -71,6 +73,10 @@ float		gtf_CameraLookAt[3]		= {0,0,0};
 float		gtf_CameraUp[3]			= {0,1,0};
 
 int m_currentKey = 0;
+
+static Timer go_FrameTimer;
+
+boolean m_Focus = true;
 
 void CreateSolarSystem()
 {
@@ -179,7 +185,7 @@ void InitScene()
 
 void IdleCallBack()
 {
-	static Timer go_FrameTimer;
+	
 
 	go_FrameTimer.MarkLap();
 
@@ -203,6 +209,17 @@ void RenderScene(float af_DeltaTime)
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
+
+
+	if(m_Focus==false)
+	{
+		printf(" " + m_currentKey);
+		int* tab=UpdateCameraLookAt();
+		gtf_CameraLookAt[0] = tab[0];
+		gtf_CameraLookAt[1] = tab[1];
+		gtf_CameraLookAt[2] = tab[2];
+	}
+
 
 	gluLookAt(	gtf_CameraPosition[0],	gtf_CameraPosition[1],	gtf_CameraPosition[2],
 				gtf_CameraLookAt[0],	gtf_CameraLookAt[1],	gtf_CameraLookAt[2],
@@ -233,6 +250,15 @@ void Draw_Skybox(float x, float y, float z, float width, float height, float len
 	x = x - width  / 2;
 	y = y - height / 2;
 	z = z - length / 2;
+
+	// Draw Front side
+	glBindTexture(GL_TEXTURE_2D, gu32_Skybox);
+	glBegin(GL_QUADS);	
+		glTexCoord2f(1.0f, 0.0f); glVertex3f(x,		  y,		z+length);
+		glTexCoord2f(1.0f, 1.0f); glVertex3f(x,		  y+height, z+length);
+		glTexCoord2f(0.0f, 1.0f); glVertex3f(x+width, y+height, z+length); 
+		glTexCoord2f(0.0f, 0.0f); glVertex3f(x+width, y,		z+length);
+	glEnd();
 
 	// Draw Back side
 	glBindTexture(GL_TEXTURE_2D, gu32_Skybox);
@@ -390,119 +416,161 @@ void KeyboardFunc(unsigned char key, int x, int y)
 switch (key)
   {
 	case '0':  
-		if(m_currentKey == (int)key)
+		if(m_currentKey == 0)
 		{
-			printf("Already on sun!\n");
+			gtf_CameraLookAt[0] = 0;
+			gtf_CameraLookAt[1] = 0;
+			gtf_CameraLookAt[2] = 0;
+		
+			RenderScene(go_FrameTimer.GetLapTime());
 		}
 		else
 		{
-			printf("The sun!\n");
-		}
-		SetcurrentKey((int)key);
-		break;
+			gtf_CameraLookAt[0] = 0;
+			gtf_CameraLookAt[1] = 0;
+			gtf_CameraLookAt[2] = 0;
 		
-		// Sun
+			RenderScene(go_FrameTimer.GetLapTime());
+		}
+		break;
 	case '1':   
-		if(m_currentKey == (int)key)
+		if(m_currentKey == 1)
 		{
-			
+			printf("Follow mercury\n");
+			SetcurrentKey(1);
+			m_Focus = false;
+			RenderScene(go_FrameTimer.GetLapTime());
 		}
 		else
 		{
 			printf("Focus on mercury\n");
+			SetcurrentKey(1);
+			m_Focus = true;
 		}
-		SetcurrentKey((int)key);
 		break;
 	case '2':   
-		if(m_currentKey == (int)key)
+		if(m_currentKey == 2)
 		{
 			printf("Follow venus\n");
+			SetcurrentKey(2);
+			m_Focus = false;
+			RenderScene(go_FrameTimer.GetLapTime());			
 		}
 		else
 		{
 			printf("Focus on venus\n");
+			SetcurrentKey(2);
+			m_Focus = true;
 		}
-		SetcurrentKey((int)key);
 		break;
 	case '3':   
-		if(m_currentKey == (int)key)
+		if(m_currentKey == 3)
 		{
 			printf("Follow earth\n");
+			SetcurrentKey(3);
+			m_Focus = false;
+			RenderScene(go_FrameTimer.GetLapTime());
 		}
 		else
 		{
 			printf("Focus on earth\n");
+			SetcurrentKey(3);
+			m_Focus = true;
 		}
-		SetcurrentKey((int)key);
 		break;
 	case '4':   
-		if(m_currentKey == (int)key)
+		if(m_currentKey == 4)
 		{
 			printf("Follow mars\n");
+			SetcurrentKey(4);
+			m_Focus = false;
+			RenderScene(go_FrameTimer.GetLapTime());
 		}
 		else
 		{
 			printf("Focus on mars\n");
+			m_Focus = true;
+			SetcurrentKey(4);
 		}
-		SetcurrentKey((int)key);
 		break;
 	case '5':   
-		if(m_currentKey == (int)key)
+		if(m_currentKey == 5)
 		{
 			printf("Follow jupiter\n");
+			SetcurrentKey(5);
+			m_Focus = false;
+			RenderScene(go_FrameTimer.GetLapTime());
 		}
 		else
 		{
 			printf("Focus on jupiter\n");
+			SetcurrentKey(5);
+			m_Focus = true;
 		}
-		SetcurrentKey((int)key);
 		break;
 	case '6':   
-		if(m_currentKey == (int)key)
+		if(m_currentKey == 6)
 		{
 			printf("Follow saturn\n");
+			SetcurrentKey(6);
+			m_Focus = false;
+			RenderScene(go_FrameTimer.GetLapTime());
 		}
 		else
 		{
 			printf("Focus on saturn\n");
+			SetcurrentKey(6);
+			m_Focus = true;
 		}
-		SetcurrentKey((int)key);
 		break;
 	case '7':   
-		if(m_currentKey == (int)key)
+		if(m_currentKey == 7)
 		{
 			printf("Follow uranus\n");
+			SetcurrentKey(7);
+			m_Focus = false;
+			RenderScene(go_FrameTimer.GetLapTime());
 		}
 		else
 		{
 			printf("Focus on uranus\n");
+			SetcurrentKey(7);
+			m_Focus = true;
 		}
-		SetcurrentKey((int)key);
 		break;
 	case '8':   
-		if(m_currentKey == (int)key)
+		if(m_currentKey == 8)
 		{
 			printf("Follow neptune\n");
+			SetcurrentKey(8);
+			m_Focus = false;
+			RenderScene(go_FrameTimer.GetLapTime());
 		}
 		else
 		{
 			printf("Focus on neptune\n");
+			SetcurrentKey(8);
+			m_Focus = true;
 		}
-		SetcurrentKey((int)key);
 		break;
 	case '9':   
-		if(m_currentKey == (int)key)
+		if(m_currentKey == 9)
 		{
 			printf("Follow pluto\n");
+			SetcurrentKey(9);
+			m_Focus = false;
+			RenderScene(go_FrameTimer.GetLapTime());
 		}
 		else
 		{
 			printf("Focus on pluto\n");
+			SetcurrentKey(9);
+			m_Focus = true;
 		}
-		SetcurrentKey((int)key);
 		break;
 	
   }
+  
 }
 
 void MouseClickFunc(int button, int state, int x, int y)
@@ -543,8 +611,31 @@ void MouseMoveFunc(int x, int y)
 {
 }
 
+int* UpdateCameraLookAt()
+{
+	int* pointer;
+	int info[3];
+
+	pointer = info;
+
+	if (m_currentKey == 0)
+	{
+		info[0] = 0; 
+		info[1] = 0; 
+		info[2] = 0; 
+	}
+	else
+	{
+		info[0] = m_Bodies[m_currentKey].GetPosition().X; 
+		info[1] = m_Bodies[m_currentKey].GetPosition().Y;
+		info[2] = m_Bodies[m_currentKey].GetPosition().Z; 
+	}
+
+	return pointer;
+}
 
 /* Get/Set function */
+
 
 
 void SetcurrentKey(int key)
