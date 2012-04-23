@@ -19,6 +19,7 @@ protected:
 	char *m_PlanetName;
 	CelestialBody *m_Satellite;
 
+
 	virtual void Construct(float radius, float orbitRadius, float revolution, float rotation, char *planetName);
 public:
 	CelestialBody();
@@ -30,6 +31,8 @@ public:
 
 	void DrawOrbit();
 
+
+
 	Position GetPosition() const;
 	float GetOrbitRadius() const;
 	float GetRadius() const;
@@ -37,6 +40,7 @@ public:
 	float GetRevolution() const;
 	float GetAngle() const;
 	char* GetPlanetName() const;
+	boolean hadSatellite() const;
 };
 
 #endif // CELESTIAL_BODY_H

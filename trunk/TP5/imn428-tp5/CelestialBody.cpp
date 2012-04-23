@@ -15,6 +15,15 @@
 #include "CelestialBody.h"
 #include "BitmapHandling.h"
 #include <cmath>
+#include <math.h>
+
+typedef struct
+{
+float x;
+float y;
+}CIRCLE;
+
+CIRCLE circle;
 
 CelestialBody::CelestialBody()
 {
@@ -51,7 +60,17 @@ void CelestialBody::Construct(float radius, float orbitRadius, float revolution,
 // TODO : Draw satellite when needed
 void CelestialBody::Update(float elapsedTime)
 {
+
+	/*if (hadSatellite())
+	{
+		printf(m_PlanetName);
+		printf("\n");
+	}*/
+
 	float theta = elapsedTime/m_Revolution*PI*2;
+	//m_Position.Z = m_Position.Z*cos(theta) + m_Position.X*sin(theta);
+	//m_Position.X = m_Position.Z*sin(theta) + m_Position.X*cos(theta);
+
 	m_Position.Z = m_Position.Z*cos(theta) - m_Position.X*sin(theta);
 	m_Position.X = m_Position.Z*sin(theta) + m_Position.X*cos(theta);
 
@@ -65,28 +84,26 @@ void CelestialBody::Update(float elapsedTime)
 	m_Angle = m_RotationTime / m_Rotation * 360.0;
 }
 
-//TODO : les bonnes couleurs de lignes
+//TODO : les bonnes couleurs de lignes, Attention! Les orbites ne sont tellement pas là!
 void CelestialBody::DrawOrbit()
 {
-	float posX, posY, posZ, theta;
-	posX = m_OrbitRadius;
-	posY = 0;
-	posZ = 0;
-
-	glLineWidth(5);
-	glColor4f(1,1,1,1);
-	glBegin(GL_LINES);
-	{
-		for(int i = 0; i<3600; i++)
-		{
-			glVertex3f(posX, posY, posZ);
-			posX = m_Position.Z*cos(i/1800*PI) - m_Position.X*sin(i/1800*PI);
-			posZ = m_Position.Z*sin(i/1800*PI) + m_Position.X*cos(i/1800*PI);
-			glVertex3f(posX, posY, posZ);
-		}
-	}
-	glEnd();
+	
+    glBegin(GL_LINES);
+    for (int i = 0; i < 180; i++)
+    {
+		glColor3f(0.0,0.0,1.0);
+		circle.x = (float)m_OrbitRadius *cos((double)i);
+		circle.y = (float)m_OrbitRadius *sin((double)i);
+		glVertex3f(circle.x,0,circle.y);
+		circle.x = (float)m_OrbitRadius * cos(i + 0.1);
+		circle.y = (float)m_OrbitRadius * sin(i + 0.1);
+		glVertex3f(circle.x,0,circle.y);
+	
+    }
+    glEnd();
+	glColor3f(1.0,1.0,1.0);
 }
+
 
 Position CelestialBody::GetPosition() const
 {
@@ -121,4 +138,11 @@ float CelestialBody::GetAngle() const
 char* CelestialBody::GetPlanetName() const
 {
 	return m_PlanetName;
+}
+
+boolean CelestialBody::hadSatellite() const
+{
+	if(m_Satellite != NULL)
+		return true;
+	return false;
 }
