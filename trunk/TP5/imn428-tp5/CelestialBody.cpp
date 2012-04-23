@@ -63,11 +63,6 @@ void CelestialBody::Update(float elapsedTime, Position centerOfRevolution)
 		m_RevolutionTime -= m_Revolution;
 	}
 
-	if (hadSatellite())
-	{
-		(*m_Satellite).Update(elapsedTime, m_Position);
-	}
-
 	float theta = m_RevolutionTime/m_Revolution*PI*2;
 
 	m_Position.Z = 0*cos(theta) - m_OrbitRadius*sin(theta);
@@ -87,18 +82,18 @@ void CelestialBody::Update(float elapsedTime, Position centerOfRevolution)
 }
 
 //TODO : les bonnes couleurs de lignes, Attention! Les orbites ne sont tellement pas là!
-void CelestialBody::DrawOrbit()
+void CelestialBody::DrawOrbit(Position centerOfRevolution)
 {
 	glPushMatrix();
 	glColor3f(1.0,1.0,1.0);
     glBegin(GL_LINES);
     for (int i = 0; i < 180; i++)
     {
-		circle.x = (float)m_OrbitRadius *cos((double)i);
-		circle.y = (float)m_OrbitRadius *sin((double)i);
+		circle.x = centerOfRevolution.X + (float)m_OrbitRadius *cos((double)i);
+		circle.y = centerOfRevolution.Z + (float)m_OrbitRadius *sin((double)i);
 		glVertex3f(circle.x,0,circle.y);
-		circle.x = (float)m_OrbitRadius * cos(i + 0.1);
-		circle.y = (float)m_OrbitRadius * sin(i + 0.1);
+		circle.x = centerOfRevolution.X + (float)m_OrbitRadius * cos(i + 0.1);
+		circle.y = centerOfRevolution.Z + (float)m_OrbitRadius * sin(i + 0.1);
 		glVertex3f(circle.x,0,circle.y);
 	
     }
@@ -141,9 +136,4 @@ float CelestialBody::GetAngle() const
 char* CelestialBody::GetPlanetName() const
 {
 	return m_PlanetName;
-}
-
-bool CelestialBody::hadSatellite() const
-{
-	return (m_Satellite != 0);
 }

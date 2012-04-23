@@ -28,7 +28,7 @@ public:
 
 	virtual void Update(float elapsedTime, Position centerOfRevolution);
 
-	void DrawOrbit();
+	void DrawOrbit(Position centerOfRevolution);
 
 
 
@@ -39,7 +39,6 @@ public:
 	float GetRevolution() const;
 	float GetAngle() const;
 	char* GetPlanetName() const;
-	bool hadSatellite() const;
 };
 
 #endif // CELESTIAL_BODY_H
