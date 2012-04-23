@@ -238,6 +238,7 @@ void RenderScene(float af_DeltaTime)
 	
 	Draw_Skybox(0.0,0.0,0.0,200.0,200.0,200);//(float)PLUTO_ORBIT_RADIUS*MULTIPLIER_ORBIT_RAD*(1.5));
 
+
 	for(int i=0;i<11;i++) RenderSpinningSphere(af_DeltaTime, i);
 	//RenderTransparentBillboard(af_DeltaTime);
 
