@@ -84,8 +84,9 @@ void CelestialBody::Update(float elapsedTime, Position centerOfRevolution)
 //TODO : les bonnes couleurs de lignes, Attention! Les orbites ne sont tellement pas là!
 void CelestialBody::DrawOrbit(Position centerOfRevolution)
 {
+	glDisable(GL_LIGHTING);
 	glPushMatrix();
-	glColor3f(1.0,1.0,1.0);
+	glColor3f(0.0,0.0,1.0);
     glBegin(GL_LINES);
     for (int i = 0; i < 180; i++)
     {
@@ -99,6 +100,7 @@ void CelestialBody::DrawOrbit(Position centerOfRevolution)
     }
     glEnd();
 	glPopMatrix();
+	glEnable(GL_LIGHTING);
 	glColor3f(1.0,1.0,1.0);
 }
 
