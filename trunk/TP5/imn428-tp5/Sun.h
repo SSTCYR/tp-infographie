@@ -11,7 +11,7 @@ public:
 	Sun();
 	Sun(float radius, float orbitRadius, float rotation, char *planetName);
 	~Sun();
-	void Update(float elapsedTime);
+	void Update(float elapsedTime, Position centerOfRevolution);
 };
 
 #endif // SUN_H

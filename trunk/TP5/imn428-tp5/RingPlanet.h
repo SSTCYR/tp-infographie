@@ -14,7 +14,7 @@ public:
 	RingPlanet();
 	RingPlanet(float radius, float orbitRadius, float revolution, float rotation, char *planetName);
 	~RingPlanet();
-	void Update(float elapsedTime);
+	void Update(float elapsedTime, Position centerOfRevolution);
 };
 
 #endif // RING_PLANET_H

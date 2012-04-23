@@ -16,6 +16,7 @@
 #include "CelestialBody.h"
 #include "Sun.h"
 #include "RingPlanet.h"
+#include "Structs.h"
 
 //Constant used throughout the example
 #define PI							3.14159265358
@@ -45,7 +46,7 @@ const float gf_NearClip			= 0.1f;
 
 const float gf_FrameTime		= 0.015f;
 
-unsigned int gu32_PlanetTexId[10];
+unsigned int gu32_PlanetTexId[11];
 unsigned int gu32_BillboardTexId;
 unsigned int gu32_Skybox;
 
@@ -57,7 +58,7 @@ float		gtf_PlanetDiffuse[4]	= {1.0f, 1.0f, 1.0f, 1.0f};
 float		gtf_PlanetEmission[4]	= {0,0,0,0};
 float		gtf_PlanetPosition[4]	= {5.0f,0.0f,0.0f, 1.0f};
 
-CelestialBody m_Bodies[10];
+CelestialBody m_Bodies[11];
 
 float		gtf_BillboardAmbient[4] = {0.2f, 0.2f, 0.2f, 0.2f};
 float		gtf_BillboardDiffuse[4] = {1.0f, 1.0f, 1.0f, 1.0f};
@@ -78,7 +79,8 @@ void CreateSolarSystem()
 	CelestialBody venus(VENUS_EQUATOR_RADIUS, VENUS_ORBIT_RADIUS, VENUS_REVO_PERIOD, VENUS_ROTATION_PERIOD, "venus");
 	m_Bodies[2] = venus;
 	CelestialBody moon(MOON_EQUATOR_RADIUS, MOON_ORBIT_RADIUS, MOON_REVO_PERIOD, MOON_ROTATION_PERIOD, "moon");
-	CelestialBody earth(EARTH_EQUATOR_RADIUS, EARTH_ORBIT_RADIUS, EARTH_REVO_PERIOD, EARTH_ROTATION_PERIOD, "earth", &moon);
+	m_Bodies[10] = moon;
+	CelestialBody earth(EARTH_EQUATOR_RADIUS, EARTH_ORBIT_RADIUS, EARTH_REVO_PERIOD, EARTH_ROTATION_PERIOD, "earth");
 	m_Bodies[3] = earth;
 	CelestialBody mars(MARS_EQUATOR_RADIUS, MARS_ORBIT_RADIUS, MARS_REVO_PERIOD, MARS_ROTATION_PERIOD, "mars");
 	m_Bodies[4] = mars;
@@ -279,9 +281,10 @@ void Draw_Skybox(float x, float y, float z, float width, float height, float len
 
 void RenderSpinningSphere(float af_DeltaTime, int i)
 {
-	m_Bodies[i].Update(af_DeltaTime);
-	
-	
+
+	if(i<10) m_Bodies[i].Update(af_DeltaTime, Position());
+	else m_Bodies[i].Update(af_DeltaTime, m_Bodies[3].GetPosition());
+
 	if(i==0)
 	{
 		glDisable(GL_LIGHTING);
@@ -317,6 +320,7 @@ void RenderSpinningSphere(float af_DeltaTime, int i)
 		glEnable(GL_LIGHTING);
 	}
 }
+
 
 void RenderTransparentBillboard(float af_DeltaTime)
 {

@@ -13,9 +13,9 @@ Sun::~Sun(void)
 {
 }
 
-void Sun::Update(float elapsedTime)
+void Sun::Update(float elapsedTime, Position centerOfRevolution)
 {
-	CelestialBody::Update(elapsedTime);
+	CelestialBody::Update(elapsedTime, centerOfRevolution);
 }
 
 void Sun::Construct(float radius, float orbitRadius, float rotation, char *planetName)
