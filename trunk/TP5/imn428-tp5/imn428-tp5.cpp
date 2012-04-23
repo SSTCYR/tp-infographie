@@ -39,6 +39,7 @@ void		SetcurrentKey(int key);
 int			GetcurrentKey();
 
 float*		UpdateCameraLookAt();
+float*		UpdateCameraFocus();
 
 const int	gs32_WindowWidth	= 960;
 const int	gs32_WindowHeight	= 600;
@@ -68,7 +69,9 @@ float		gtf_BillboardEmission[4] = {1.0f, 1.0f, 1.0f, 1.0f};
 float		gtf_BillboardPosition[4]= {0.0f,0.0f,0.0f, 1.0f};
 float		gf_BillboardHalfSize = 8;
 
+float		gtf_InitCameraPosition[3]	= {0,20,30};
 float		gtf_CameraPosition[3]	= {0,20,30};
+float		gtf_InitCameraLookAt[3]	= {0,0,0};
 float		gtf_CameraLookAt[3]		= {0,0,0};
 float		gtf_CameraUp[3]			= {0,1,0};
 
@@ -213,18 +216,21 @@ void RenderScene(float af_DeltaTime)
 	glLoadIdentity();
 	if(m_Focus==false)
 	{
-		printf(" " + m_currentKey);
 		float* tab=UpdateCameraLookAt();
 		gtf_CameraLookAt[0] = tab[0];
 		gtf_CameraLookAt[1] = tab[1];
 		gtf_CameraLookAt[2] = tab[2];
 
+		gtf_CameraPosition[0] = gtf_InitCameraPosition[0];
+		gtf_CameraPosition[1] = gtf_InitCameraPosition[1];
+		gtf_CameraPosition[2] = gtf_InitCameraPosition[2];
+
 	}
 	else
 	{
-			gtf_CameraLookAt[0] = 0;
-			gtf_CameraLookAt[1] = 0;
-			gtf_CameraLookAt[2] = 0;
+		//To do : Faire la vu derrière la caméra. Donc x = Pos.X , y = Revolution de la planète, z = Pos.Z. 
+		//Il faut ajouter un cos/sin surêment pour faire tournée la caméra.
+		
 	}
 
 	gluLookAt(	gtf_CameraPosition[0],	gtf_CameraPosition[1],	gtf_CameraPosition[2],
@@ -244,7 +250,7 @@ void RenderScene(float af_DeltaTime)
 	
 	Draw_Skybox(0.0,0.0,0.0,200.0,200.0,200.0);//(float)PLUTO_ORBIT_RADIUS*MULTIPLIER_ORBIT_RAD*(1.5)
 
-
+	
 	for(int i=0;i<11;i++) RenderSpinningSphere(af_DeltaTime, i);
 	//RenderTransparentBillboard(af_DeltaTime);
 
@@ -433,6 +439,7 @@ switch (key)
 		{
 			SetcurrentKey(0);
 			m_Focus = true;
+			RenderScene(go_FrameTimer.GetLapTime());
 		}
 		break;
 	case '1':   
@@ -448,6 +455,7 @@ switch (key)
 			printf("Focus on mercury\n");
 			SetcurrentKey(1);
 			m_Focus = true;
+			RenderScene(go_FrameTimer.GetLapTime());
 		}
 		break;
 	case '2':   
@@ -463,6 +471,7 @@ switch (key)
 			printf("Focus on venus\n");
 			SetcurrentKey(2);
 			m_Focus = true;
+			RenderScene(go_FrameTimer.GetLapTime());
 		}
 		break;
 	case '3':   
@@ -631,6 +640,31 @@ float* UpdateCameraLookAt()
 		info[0] = m_Bodies[m_currentKey].GetPosition().X; 
 		info[1] = m_Bodies[m_currentKey].GetPosition().Y;
 		info[2] = m_Bodies[m_currentKey].GetPosition().Z; 
+	}
+
+	return pointer;
+}
+
+float* UpdateCameraFocus()
+{
+	float* pointer;
+	float info[4];
+
+	pointer = info;
+
+	if (m_currentKey == 0)
+	{
+		info[0] = 0; 
+		info[1] = 0; 
+		info[2] = 0; 
+		info[3] = 0; 
+	}
+	else
+	{
+		info[0] = m_Bodies[m_currentKey].GetPosition().X; 
+		info[1] = m_Bodies[m_currentKey].GetPosition().Y;
+		info[2] = m_Bodies[m_currentKey].GetPosition().Z; 
+		info[3] = m_Bodies[m_currentKey].GetRevolution(); 
 	}
 
 	return pointer;
