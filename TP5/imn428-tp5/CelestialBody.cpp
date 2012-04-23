@@ -78,7 +78,7 @@ void CelestialBody::Update(float elapsedTime, Position centerOfRevolution)
 		m_RotationTime -= m_Rotation;
 	}
 
-	m_Angle = m_RotationTime / m_Rotation * 360.0;
+	m_Angle = (float)m_RotationTime / m_Rotation * 360.0;
 }
 
 //TODO : les bonnes couleurs de lignes, Attention! Les orbites ne sont tellement pas là!

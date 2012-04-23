@@ -69,8 +69,10 @@ float		gtf_BillboardEmission[4] = {1.0f, 1.0f, 1.0f, 1.0f};
 float		gtf_BillboardPosition[4]= {0.0f,0.0f,0.0f, 1.0f};
 float		gf_BillboardHalfSize = 8;
 
+
 float		gtf_InitCameraPosition[3]	= {0,20,30};
 float		gtf_CameraPosition[3]	= {0,20,30};
+
 float		gtf_InitCameraLookAt[3]	= {0,0,0};
 float		gtf_CameraLookAt[3]		= {0,0,0};
 float		gtf_CameraUp[3]			= {0,1,0};
@@ -238,21 +240,20 @@ void RenderScene(float af_DeltaTime)
 				gtf_CameraUp[0],		gtf_CameraUp[1],		gtf_CameraUp[2]);
 	
 	//Light Setup
-	for(int i=1;i<10;i++) m_Bodies[i].DrawOrbit(Position());
-	m_Bodies[10].DrawOrbit(m_Bodies[3].GetPosition());
-
+	
 	glEnable(GL_LIGHT0);
 
 	glLightfv(	GL_LIGHT0,	GL_POSITION,		gtf_LightPosition);
 	glLightfv(	GL_LIGHT0,	GL_DIFFUSE,			gtf_LightColor);
 	glLightfv(	GL_LIGHT0,	GL_SPECULAR,		gtf_LightColor);
 	glLightf(	GL_LIGHT0,	GL_SPOT_CUTOFF,		180.0f);
-	
-	Draw_Skybox(0.0,0.0,0.0,200.0,200.0,200.0);//(float)PLUTO_ORBIT_RADIUS*MULTIPLIER_ORBIT_RAD*(1.5)
+     
+	Draw_Skybox(0.0,0.0,0.0,200.0,200.0,200.0);       
 
-	
+
 	for(int i=0;i<11;i++) RenderSpinningSphere(af_DeltaTime, i);
-	//RenderTransparentBillboard(af_DeltaTime);
+	for(int i=1;i<10;i++) m_Bodies[i].DrawOrbit(Position());
+	m_Bodies[10].DrawOrbit(m_Bodies[3].GetPosition());
 
 	glutSwapBuffers();
 }
@@ -264,60 +265,74 @@ void Draw_Skybox(float x, float y, float z, float width, float height, float len
 	y = y - height / 2;
 	z = z - length / 2;
 
-	// Draw Front side
+	//Back
+	glDisable(GL_LIGHTING);
+	glPushMatrix();
 	glBindTexture(GL_TEXTURE_2D, gu32_Skybox);
 	glBegin(GL_QUADS);	
-		glTexCoord2f(1.0f, 0.0f); glVertex3f(x,		  y,		z+length);
-		glTexCoord2f(1.0f, 1.0f); glVertex3f(x,		  y+height, z+length);
-		glTexCoord2f(0.0f, 1.0f); glVertex3f(x+width, y+height, z+length); 
-		glTexCoord2f(0.0f, 0.0f); glVertex3f(x+width, y,		z+length);
+		glTexCoord2f(0.0f, 0.0f); glVertex3f(x,y,z);
+		glTexCoord2f(1.0f, 0.0f); glVertex3f(x+width,y,z);
+		glTexCoord2f(1.0f, 1.0f); glVertex3f(x+width,y+height,z);
+		glTexCoord2f(0.0f, 1.0f); glVertex3f(x,y+height,z);
 	glEnd();
+	glPopMatrix();
 
-	// Draw Back side
+	//Front
+	glPushMatrix();
 	glBindTexture(GL_TEXTURE_2D, gu32_Skybox);
-	glBegin(GL_QUADS);		
-		glTexCoord2f(1.0f, 0.0f); glVertex3f(x+width, y,		z);
-		glTexCoord2f(1.0f, 1.0f); glVertex3f(x+width, y+height, z); 
-		glTexCoord2f(0.0f, 1.0f); glVertex3f(x,		  y+height,	z);
-		glTexCoord2f(0.0f, 0.0f); glVertex3f(x,		  y,		z);
+	glBegin(GL_QUADS);	
+		glTexCoord2f(0.0f, 0.0f); glVertex3f(x,y,z+length);
+		glTexCoord2f(1.0f, 0.0f); glVertex3f(x+width,y,z+length);
+		glTexCoord2f(1.0f, 1.0f); glVertex3f(x+width,y+height,z+length);
+		glTexCoord2f(0.0f, 1.0f); glVertex3f(x,y+height,z+length);
 	glEnd();
+	glPopMatrix();
 
-	// Draw Left side
+	//Left
+	glPushMatrix();
 	glBindTexture(GL_TEXTURE_2D, gu32_Skybox);
-	glBegin(GL_QUADS);		
-		glTexCoord2f(1.0f, 1.0f); glVertex3f(x,		  y+height,	z);	
-		glTexCoord2f(0.0f, 1.0f); glVertex3f(x,		  y+height,	z+length); 
-		glTexCoord2f(0.0f, 0.0f); glVertex3f(x,		  y,		z+length);
-		glTexCoord2f(1.0f, 0.0f); glVertex3f(x,		  y,		z);		
+	glBegin(GL_QUADS);	
+		glTexCoord2f(0.0f, 0.0f); glVertex3f(x,y,z);
+		glTexCoord2f(1.0f, 0.0f); glVertex3f(x,y,z+length);
+		glTexCoord2f(1.0f, 1.0f); glVertex3f(x,y+height,z+length);
+		glTexCoord2f(0.0f, 1.0f); glVertex3f(x,y+height,z);
 	glEnd();
+	glPopMatrix();
 
-	// Draw Right side
+	//Right
+	glPushMatrix();
 	glBindTexture(GL_TEXTURE_2D, gu32_Skybox);
-	glBegin(GL_QUADS);		
-		glTexCoord2f(0.0f, 0.0f); glVertex3f(x+width, y,		z);
-		glTexCoord2f(1.0f, 0.0f); glVertex3f(x+width, y,		z+length);
-		glTexCoord2f(1.0f, 1.0f); glVertex3f(x+width, y+height,	z+length); 
-		glTexCoord2f(0.0f, 1.0f); glVertex3f(x+width, y+height,	z);
+	glBegin(GL_QUADS);	
+		glTexCoord2f(0.0f, 0.0f); glVertex3f(x+width,y,z);
+		glTexCoord2f(1.0f, 0.0f); glVertex3f(x+width,y,z+length);
+		glTexCoord2f(1.0f, 1.0f); glVertex3f(x+width,y+height,z+length);
+		glTexCoord2f(0.0f, 1.0f); glVertex3f(x+width,y+height,z);
 	glEnd();
+	glPopMatrix();
 
-	// Draw Up side
+	//Up
+
+	glPushMatrix();
 	glBindTexture(GL_TEXTURE_2D, gu32_Skybox);
-	glBegin(GL_QUADS);		
-		glTexCoord2f(0.0f, 0.0f); glVertex3f(x+width, y+height, z);
-		glTexCoord2f(1.0f, 0.0f); glVertex3f(x+width, y+height, z+length); 
-		glTexCoord2f(1.0f, 1.0f); glVertex3f(x,		  y+height,	z+length);
-		glTexCoord2f(0.0f, 1.0f); glVertex3f(x,		  y+height,	z);
+	glBegin(GL_QUADS);	
+		glTexCoord2f(0.0f, 0.0f); glVertex3f(x,y+height,z);
+		glTexCoord2f(1.0f, 0.0f); glVertex3f(x+width,y+height,z);
+		glTexCoord2f(1.0f, 1.0f); glVertex3f(x+width,y+height,z+length);
+		glTexCoord2f(0.0f, 1.0f); glVertex3f(x,y+height,z+length);
 	glEnd();
+	glPopMatrix();
 
-	// Draw Down side
+	//Down
+	glPushMatrix();
 	glBindTexture(GL_TEXTURE_2D, gu32_Skybox);
-	glBegin(GL_QUADS);		
-		glTexCoord2f(0.0f, 0.0f); glVertex3f(x,		  y,		z);
-		glTexCoord2f(1.0f, 0.0f); glVertex3f(x,		  y,		z+length);
-		glTexCoord2f(1.0f, 1.0f); glVertex3f(x+width, y,		z+length); 
-		glTexCoord2f(0.0f, 1.0f); glVertex3f(x+width, y,		z);
+	glBegin(GL_QUADS);	
+		glTexCoord2f(0.0f, 0.0f); glVertex3f(x,y,z);
+		glTexCoord2f(1.0f, 0.0f); glVertex3f(x+width,y,z);
+		glTexCoord2f(1.0f, 1.0f); glVertex3f(x+width,y,z+length);
+		glTexCoord2f(0.0f, 1.0f); glVertex3f(x,y,z+length);
 	glEnd();
-
+	glPopMatrix();
+	glEnable(GL_LIGHTING);
 }
 
 void RenderSpinningSphere(float af_DeltaTime, int i)
@@ -328,6 +343,7 @@ void RenderSpinningSphere(float af_DeltaTime, int i)
 
 	if(i==0)
 	{
+		RenderTransparentBillboard(af_DeltaTime);
 		glDisable(GL_LIGHTING);
 	}
 
@@ -365,6 +381,7 @@ void RenderSpinningSphere(float af_DeltaTime, int i)
 
 void RenderTransparentBillboard(float af_DeltaTime)
 {
+	glDisable(GL_LIGHTING);
 	glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT,gtf_BillboardAmbient);
 	glMaterialfv(GL_FRONT_AND_BACK,GL_DIFFUSE,gtf_BillboardDiffuse);
 	glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,gtf_BillboardEmission);
@@ -417,7 +434,7 @@ void RenderTransparentBillboard(float af_DeltaTime)
 
 	glDisable(GL_BLEND);
 	glDepthMask(GL_TRUE);
-
+	glEnable(GL_LIGHTING);
 }
 
 
