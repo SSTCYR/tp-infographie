@@ -130,7 +130,7 @@ void InitScene()
 	//Take note that the actual image is created on the stack. It will be destroyed
 	//when the function exits, as we don't need the image anymore once it's in video
 	//memory.
-	char* planetName[10];
+	char* planetName[11];
 	planetName[0] = "Resources/texture_sun.bmp";
 	planetName[1] = "Resources/texture_mercury.bmp";
 	planetName[2] = "Resources/texture_venus.bmp";
@@ -141,9 +141,10 @@ void InitScene()
 	planetName[7] = "Resources/texture_uranus.bmp";
 	planetName[8] = "Resources/texture_neptune.bmp";
 	planetName[9] = "Resources/texture_pluto.bmp";
+	planetName[10] = "Resources/texture_moon.bmp";
 	
 	RGBImage o_TmpTexture;
-	for(int i=0;i<10;i++)
+	for(int i=0;i<11;i++)
 	{
 		LoadBmp(planetName[i],o_TmpTexture);
 
@@ -218,7 +219,8 @@ void RenderScene(float af_DeltaTime)
 
 	Draw_Skybox(0.0,0.0,0.0,100.0,100.0,(float)PLUTO_ORBIT_RADIUS*MULTIPLIER_ORBIT_RAD*(1.5));
 
-	for(int i=1;i<11;i++) m_Bodies[i].DrawOrbit();
+	for(int i=1;i<10;i++) m_Bodies[i].DrawOrbit(Position());
+	m_Bodies[10].DrawOrbit(m_Bodies[3].GetPosition());
 	for(int i=0;i<11;i++) RenderSpinningSphere(af_DeltaTime, i);
 	RenderTransparentBillboard(af_DeltaTime);
 
