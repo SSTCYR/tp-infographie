@@ -38,7 +38,7 @@ void		MouseClickFunc(int button, int state, int x, int y);
 void		SetcurrentKey(int key);
 int			GetcurrentKey();
 
-int*		UpdateCameraLookAt();
+float*		UpdateCameraLookAt();
 
 const int	gs32_WindowWidth	= 960;
 const int	gs32_WindowHeight	= 600;
@@ -68,7 +68,7 @@ float		gtf_BillboardEmission[4] = {1.0f, 1.0f, 1.0f, 1.0f};
 float		gtf_BillboardPosition[4]= {0.0f,0.0f,0.0f, 1.0f};
 float		gf_BillboardHalfSize = 8;
 
-float		gtf_CameraPosition[3]	= {0,10,50};
+float		gtf_CameraPosition[3]	= {0,20,30};
 float		gtf_CameraLookAt[3]		= {0,0,0};
 float		gtf_CameraUp[3]			= {0,1,0};
 
@@ -185,23 +185,25 @@ void InitScene()
 
 void IdleCallBack()
 {
-	
-
 	go_FrameTimer.MarkLap();
 
 	if(go_FrameTimer.GetLapTime() >= gf_FrameTime)
 	{
+		
 		RenderScene(go_FrameTimer.GetLapTime());
+		//CameraUpdate();
 		go_FrameTimer.ResetTimer();
 	}
 }
+
 
 void RenderScene(float af_DeltaTime)
 {
 	glClearColor(0.0,0.0,0.0,1);
 	glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	//Camera setup
+
+	//Camera Setup
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 
@@ -209,22 +211,26 @@ void RenderScene(float af_DeltaTime)
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-
-
 	if(m_Focus==false)
 	{
 		printf(" " + m_currentKey);
-		int* tab=UpdateCameraLookAt();
+		float* tab=UpdateCameraLookAt();
 		gtf_CameraLookAt[0] = tab[0];
 		gtf_CameraLookAt[1] = tab[1];
 		gtf_CameraLookAt[2] = tab[2];
-	}
 
+	}
+	else
+	{
+			gtf_CameraLookAt[0] = 0;
+			gtf_CameraLookAt[1] = 0;
+			gtf_CameraLookAt[2] = 0;
+	}
 
 	gluLookAt(	gtf_CameraPosition[0],	gtf_CameraPosition[1],	gtf_CameraPosition[2],
 				gtf_CameraLookAt[0],	gtf_CameraLookAt[1],	gtf_CameraLookAt[2],
 				gtf_CameraUp[0],		gtf_CameraUp[1],		gtf_CameraUp[2]);
-
+	
 	//Light Setup
 	for(int i=1;i<10;i++) m_Bodies[i].DrawOrbit(Position());
 	m_Bodies[10].DrawOrbit(m_Bodies[3].GetPosition());
@@ -236,7 +242,7 @@ void RenderScene(float af_DeltaTime)
 	glLightfv(	GL_LIGHT0,	GL_SPECULAR,		gtf_LightColor);
 	glLightf(	GL_LIGHT0,	GL_SPOT_CUTOFF,		180.0f);
 	
-	Draw_Skybox(0.0,0.0,0.0,200.0,200.0,200);//(float)PLUTO_ORBIT_RADIUS*MULTIPLIER_ORBIT_RAD*(1.5));
+	Draw_Skybox(0.0,0.0,0.0,200.0,200.0,200.0);//(float)PLUTO_ORBIT_RADIUS*MULTIPLIER_ORBIT_RAD*(1.5)
 
 
 	for(int i=0;i<11;i++) RenderSpinningSphere(af_DeltaTime, i);
@@ -419,19 +425,14 @@ switch (key)
 	case '0':  
 		if(m_currentKey == 0)
 		{
-			gtf_CameraLookAt[0] = 0;
-			gtf_CameraLookAt[1] = 0;
-			gtf_CameraLookAt[2] = 0;
-		
+			SetcurrentKey(0);
+			m_Focus = false;
 			RenderScene(go_FrameTimer.GetLapTime());
 		}
 		else
 		{
-			gtf_CameraLookAt[0] = 0;
-			gtf_CameraLookAt[1] = 0;
-			gtf_CameraLookAt[2] = 0;
-		
-			RenderScene(go_FrameTimer.GetLapTime());
+			SetcurrentKey(0);
+			m_Focus = true;
 		}
 		break;
 	case '1':   
@@ -612,10 +613,10 @@ void MouseMoveFunc(int x, int y)
 {
 }
 
-int* UpdateCameraLookAt()
+float* UpdateCameraLookAt()
 {
-	int* pointer;
-	int info[3];
+	float* pointer;
+	float info[3];
 
 	pointer = info;
 
