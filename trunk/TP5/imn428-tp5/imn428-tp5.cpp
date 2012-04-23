@@ -206,7 +206,7 @@ void RenderScene(float af_DeltaTime)
 				gtf_CameraUp[0],		gtf_CameraUp[1],		gtf_CameraUp[2]);
 
 	//Light Setup
-	
+
 	glEnable(GL_LIGHT0);
 
 	glLightfv(	GL_LIGHT0,	GL_POSITION,		gtf_LightPosition);

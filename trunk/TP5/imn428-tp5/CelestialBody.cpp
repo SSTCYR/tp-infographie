@@ -54,12 +54,19 @@ void CelestialBody::Construct(float radius, float orbitRadius, float revolution,
 	m_Position.Z = 0;
 	m_Angle = 0;
 	m_RotationTime = 0;
+	m_RevolutionTime = 0;
 	m_PlanetName = planetName;
 }
 
 // TODO : Draw satellite when needed
 void CelestialBody::Update(float elapsedTime)
 {
+	m_RevolutionTime += elapsedTime;
+
+	if(m_RevolutionTime > m_Revolution)
+	{
+		m_RevolutionTime -= m_Revolution;
+	}
 
 	/*if (hadSatellite())
 	{
@@ -67,12 +74,12 @@ void CelestialBody::Update(float elapsedTime)
 		printf("\n");
 	}*/
 
-	float theta = elapsedTime/m_Revolution*PI*2;
+	float theta = m_RevolutionTime/m_Revolution*PI*2;
 	//m_Position.Z = m_Position.Z*cos(theta) + m_Position.X*sin(theta);
 	//m_Position.X = m_Position.Z*sin(theta) + m_Position.X*cos(theta);
 
-	m_Position.Z = m_Position.Z*cos(theta) - m_Position.X*sin(theta);
-	m_Position.X = m_Position.Z*sin(theta) + m_Position.X*cos(theta);
+	m_Position.Z = 0*cos(theta) - m_OrbitRadius*sin(theta);
+	m_Position.X = 0*sin(theta) + m_OrbitRadius*cos(theta);
 
 	m_RotationTime += elapsedTime;
 
@@ -87,11 +94,11 @@ void CelestialBody::Update(float elapsedTime)
 //TODO : les bonnes couleurs de lignes, Attention! Les orbites ne sont tellement pas là!
 void CelestialBody::DrawOrbit()
 {
-	
+	glPushMatrix();
+	glColor3f(1.0,1.0,1.0);
     glBegin(GL_LINES);
     for (int i = 0; i < 180; i++)
     {
-		glColor3f(0.0,0.0,1.0);
 		circle.x = (float)m_OrbitRadius *cos((double)i);
 		circle.y = (float)m_OrbitRadius *sin((double)i);
 		glVertex3f(circle.x,0,circle.y);
@@ -101,6 +108,7 @@ void CelestialBody::DrawOrbit()
 	
     }
     glEnd();
+	glPopMatrix();
 	glColor3f(1.0,1.0,1.0);
 }
 
