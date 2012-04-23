@@ -34,11 +34,6 @@ CelestialBody::CelestialBody(float radius,	float orbitRadius, float revolution, 
 	Construct(radius, orbitRadius, revolution, rotation, planetName);
 }
 
-CelestialBody::CelestialBody(float radius,	float orbitRadius, float revolution, float rotation, char *planetName, CelestialBody *satellite) : m_Satellite(satellite)
-{
-	CelestialBody(radius, orbitRadius, revolution, rotation, planetName);
-}
-
 CelestialBody::~CelestialBody()
 {
 }
@@ -59,7 +54,7 @@ void CelestialBody::Construct(float radius, float orbitRadius, float revolution,
 }
 
 // TODO : Draw satellite when needed
-void CelestialBody::Update(float elapsedTime)
+void CelestialBody::Update(float elapsedTime, Position centerOfRevolution)
 {
 	m_RevolutionTime += elapsedTime;
 
@@ -68,18 +63,18 @@ void CelestialBody::Update(float elapsedTime)
 		m_RevolutionTime -= m_Revolution;
 	}
 
-	/*if (hadSatellite())
+	if (hadSatellite())
 	{
-		printf(m_PlanetName);
-		printf("\n");
-	}*/
+		(*m_Satellite).Update(elapsedTime, m_Position);
+	}
 
 	float theta = m_RevolutionTime/m_Revolution*PI*2;
-	//m_Position.Z = m_Position.Z*cos(theta) + m_Position.X*sin(theta);
-	//m_Position.X = m_Position.Z*sin(theta) + m_Position.X*cos(theta);
 
 	m_Position.Z = 0*cos(theta) - m_OrbitRadius*sin(theta);
 	m_Position.X = 0*sin(theta) + m_OrbitRadius*cos(theta);
+
+	m_Position.Z += centerOfRevolution.Z;
+	m_Position.X += centerOfRevolution.X;
 
 	m_RotationTime += elapsedTime;
 
@@ -148,9 +143,7 @@ char* CelestialBody::GetPlanetName() const
 	return m_PlanetName;
 }
 
-boolean CelestialBody::hadSatellite() const
+bool CelestialBody::hadSatellite() const
 {
-	if(m_Satellite != NULL)
-		return true;
-	return false;
+	return (m_Satellite != 0);
 }

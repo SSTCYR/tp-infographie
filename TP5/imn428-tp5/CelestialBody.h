@@ -18,17 +18,15 @@ protected:
 	float m_RotationTime;
 	float m_RevolutionTime;
 	char *m_PlanetName;
-	CelestialBody *m_Satellite;
 
 
 	virtual void Construct(float radius, float orbitRadius, float revolution, float rotation, char *planetName);
 public:
 	CelestialBody();
 	CelestialBody(float radius,	float orbitRadius, float revolution, float rotation, char *planetName);
-	CelestialBody(float radius,	float orbitRadius, float revolution, float rotation, char *planetName, CelestialBody *satellite);
 	virtual ~CelestialBody(); 
 
-	virtual void Update(float elapsedTime);
+	virtual void Update(float elapsedTime, Position centerOfRevolution);
 
 	void DrawOrbit();
 
@@ -41,7 +39,7 @@ public:
 	float GetRevolution() const;
 	float GetAngle() const;
 	char* GetPlanetName() const;
-	boolean hadSatellite() const;
+	bool hadSatellite() const;
 };
 
 #endif // CELESTIAL_BODY_H
