@@ -14,8 +14,6 @@
 #include "BitmapHandling.h"
 #include "SolarSystem_Config.h"
 #include "CelestialBody.h"
-#include "Sun.h"
-#include "RingPlanet.h"
 #include "Structs.h"
 
 //Constant used throughout the example
@@ -29,6 +27,7 @@ void		CreateSolarSystem();
 void		RenderScene(float af_DeltaTime);
 void		RenderSpinningSphere(float af_DeltaTime, int index);
 void		RenderTransparentBillboard(float af_DeltaTime);
+void		RenderRing(Ring planetRing);
 
 void		Draw_Skybox(float x, float y, float z, float width, float height, float length);
 
@@ -63,6 +62,9 @@ float		gtf_PlanetPosition[4]	= {5.0f,0.0f,0.0f, 1.0f};
 
 CelestialBody m_Bodies[11];
 
+Ring		ringSaturn(1.05*MULTIPLIER_EQUAT_RAD*SATURN_EQUATOR_RADIUS, 2*MULTIPLIER_EQUAT_RAD*SATURN_EQUATOR_RADIUS, 0, 6, 0);
+Ring		ringUranus(1.2*MULTIPLIER_EQUAT_RAD*URANUS_EQUATOR_RADIUS, 1.6*MULTIPLIER_EQUAT_RAD*URANUS_EQUATOR_RADIUS, 90, 7, 0);
+
 float		gtf_BillboardAmbient[4] = {0.2f, 0.2f, 0.2f, 0.2f};
 float		gtf_BillboardDiffuse[4] = {1.0f, 1.0f, 1.0f, 1.0f};
 float		gtf_BillboardEmission[4] = {1.0f, 1.0f, 1.0f, 1.0f};
@@ -70,7 +72,7 @@ float		gtf_BillboardPosition[4]= {0.0f,0.0f,0.0f, 1.0f};
 float		gf_BillboardHalfSize = 8;
 
 
-float		gtf_InitCameraPosition[3]	= {0,20,30};
+float		gtf_InitCameraPosition[3]	= {30,20,-30};
 float		gtf_CameraPosition[3]	= {0,20,30};
 
 float		gtf_InitCameraLookAt[3]	= {0,0,0};
@@ -85,27 +87,27 @@ boolean m_Focus = true;
 
 void CreateSolarSystem()
 {
-	CelestialBody mercury(MERCURY_EQUATOR_RADIUS, MERCURY_ORBIT_RADIUS, MERCURY_REVO_PERIOD, MERCURY_ROTATION_PERIOD, "mercury");
+	CelestialBody mercury(MERCURY_EQUATOR_RADIUS, MERCURY_ORBIT_RADIUS, MERCURY_REVO_PERIOD, MERCURY_ROTATION_PERIOD, "mercury", false);
 	m_Bodies[1] = mercury;
-	CelestialBody venus(VENUS_EQUATOR_RADIUS, VENUS_ORBIT_RADIUS, VENUS_REVO_PERIOD, VENUS_ROTATION_PERIOD, "venus");
+	CelestialBody venus(VENUS_EQUATOR_RADIUS, VENUS_ORBIT_RADIUS, VENUS_REVO_PERIOD, VENUS_ROTATION_PERIOD, "venus", false);
 	m_Bodies[2] = venus;
-	CelestialBody moon(MOON_EQUATOR_RADIUS, MOON_ORBIT_RADIUS, MOON_REVO_PERIOD, MOON_ROTATION_PERIOD, "moon");
+	CelestialBody moon(MOON_EQUATOR_RADIUS, MOON_ORBIT_RADIUS, MOON_REVO_PERIOD, MOON_ROTATION_PERIOD, "moon", false);
 	m_Bodies[10] = moon;
-	CelestialBody earth(EARTH_EQUATOR_RADIUS, EARTH_ORBIT_RADIUS, EARTH_REVO_PERIOD, EARTH_ROTATION_PERIOD, "earth");
+	CelestialBody earth(EARTH_EQUATOR_RADIUS, EARTH_ORBIT_RADIUS, EARTH_REVO_PERIOD, EARTH_ROTATION_PERIOD, "earth", false);
 	m_Bodies[3] = earth;
-	CelestialBody mars(MARS_EQUATOR_RADIUS, MARS_ORBIT_RADIUS, MARS_REVO_PERIOD, MARS_ROTATION_PERIOD, "mars");
+	CelestialBody mars(MARS_EQUATOR_RADIUS, MARS_ORBIT_RADIUS, MARS_REVO_PERIOD, MARS_ROTATION_PERIOD, "mars", false);
 	m_Bodies[4] = mars;
-	CelestialBody jupiter(JUPITER_EQUATOR_RADIUS, JUPITER_ORBIT_RADIUS, JUPITER_REVO_PERIOD, JUPITER_ROTATION_PERIOD, "jupiter");
+	CelestialBody jupiter(JUPITER_EQUATOR_RADIUS, JUPITER_ORBIT_RADIUS, JUPITER_REVO_PERIOD, JUPITER_ROTATION_PERIOD, "jupiter", false);
 	m_Bodies[5] = jupiter;
-	RingPlanet saturn(SATURN_EQUATOR_RADIUS, SATURN_ORBIT_RADIUS, SATURN_REVO_PERIOD, SATURN_ROTATION_PERIOD, "saturn");
+	CelestialBody saturn(SATURN_EQUATOR_RADIUS, SATURN_ORBIT_RADIUS, SATURN_REVO_PERIOD, SATURN_ROTATION_PERIOD, "saturn", true);
 	m_Bodies[6] = saturn;
-	RingPlanet uranus(URANUS_EQUATOR_RADIUS, URANUS_ORBIT_RADIUS, URANUS_REVO_PERIOD, URANUS_ROTATION_PERIOD, "uranus");
+	CelestialBody uranus(URANUS_EQUATOR_RADIUS, URANUS_ORBIT_RADIUS, URANUS_REVO_PERIOD, URANUS_ROTATION_PERIOD, "uranus", true);
 	m_Bodies[7] = uranus;
-	CelestialBody neptune(NEPTUNE_EQUATOR_RADIUS, NEPTUNE_ORBIT_RADIUS, NEPTUNE_REVO_PERIOD, NEPTUNE_ROTATION_PERIOD, "neptune");
+	CelestialBody neptune(NEPTUNE_EQUATOR_RADIUS, NEPTUNE_ORBIT_RADIUS, NEPTUNE_REVO_PERIOD, NEPTUNE_ROTATION_PERIOD, "neptune", false);
 	m_Bodies[8] = neptune;
-	CelestialBody pluto(PLUTO_EQUATOR_RADIUS, PLUTO_ORBIT_RADIUS, PLUTO_REVO_PERIOD, PLUTO_ROTATION_PERIOD, "pluto");
+	CelestialBody pluto(PLUTO_EQUATOR_RADIUS, PLUTO_ORBIT_RADIUS, PLUTO_REVO_PERIOD, PLUTO_ROTATION_PERIOD, "pluto", false);
 	m_Bodies[9] = pluto;
-	Sun sun(SUN_EQUATOR_RADIUS, SUN_ORBIT_RADIUS, SUN_ROTATION_PERIOD, "sun");
+	CelestialBody sun(SUN_EQUATOR_RADIUS, SUN_ORBIT_RADIUS, 1, SUN_ROTATION_PERIOD, "sun", false);
 	m_Bodies[0] = sun;
 }
 
@@ -153,6 +155,9 @@ void InitScene()
 	planetName[8] = "Resources/texture_neptune.bmp";
 	planetName[9] = "Resources/texture_pluto.bmp";
 	planetName[10] = "Resources/texture_moon.bmp";
+	char* ringName[2];
+	ringName[0] = "Resources/ring_saturn.bmp";
+	ringName[1] = "Resources/ring_uranus.bmp";
 	
 	RGBImage o_TmpTexture;
 	for(int i=0;i<11;i++)
@@ -182,6 +187,25 @@ void InitScene()
 
 	glGenTextures(1,&gu32_Skybox);
 	glBindTexture(GL_TEXTURE_2D,gu32_Skybox);
+	glTexImage2D(GL_TEXTURE_2D,0,3,o_TmpTexture.GetWidth(),o_TmpTexture.GetHeight(),0,GL_RGB,GL_FLOAT,o_TmpTexture.GetRasterData());
+
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);	// Linear Filtering
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);	// Linear Filtering
+
+	//load ring's texture in memory
+	LoadBmp(ringName[0],o_TmpTexture);
+
+	glGenTextures(1,&ringSaturn.ringId);
+	glBindTexture(GL_TEXTURE_2D,ringSaturn.ringId);
+	glTexImage2D(GL_TEXTURE_2D,0,3,o_TmpTexture.GetWidth(),o_TmpTexture.GetHeight(),0,GL_RGB,GL_FLOAT,o_TmpTexture.GetRasterData());
+
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);	// Linear Filtering
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);	// Linear Filtering
+
+	LoadBmp(ringName[1],o_TmpTexture);
+
+	glGenTextures(1,&ringUranus.ringId);
+	glBindTexture(GL_TEXTURE_2D,ringUranus.ringId);
 	glTexImage2D(GL_TEXTURE_2D,0,3,o_TmpTexture.GetWidth(),o_TmpTexture.GetHeight(),0,GL_RGB,GL_FLOAT,o_TmpTexture.GetRasterData());
 
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);	// Linear Filtering
@@ -250,8 +274,8 @@ void RenderScene(float af_DeltaTime)
      
 	Draw_Skybox(0.0,0.0,0.0,200.0,200.0,200.0);       
 
-
 	for(int i=0;i<11;i++) RenderSpinningSphere(af_DeltaTime, i);
+
 	for(int i=1;i<10;i++) m_Bodies[i].DrawOrbit(Position());
 	m_Bodies[10].DrawOrbit(m_Bodies[3].GetPosition());
 
@@ -372,6 +396,12 @@ void RenderSpinningSphere(float af_DeltaTime, int i)
 
 	glPopMatrix();
 
+	if(m_Bodies[i].HasRing())
+	{	
+		if (i==ringSaturn.index) RenderRing(ringSaturn);
+		else RenderRing(ringUranus);
+	}
+
 	if(i==0)
 	{
 		glEnable(GL_LIGHTING);
@@ -437,6 +467,45 @@ void RenderTransparentBillboard(float af_DeltaTime)
 	glEnable(GL_LIGHTING);
 }
 
+//TO DO faire en sorte que l'anneau d'Uranus suive la tangente de son orbite
+void RenderRing(Ring planetRing)
+{
+	glDisable(GL_LIGHTING);
+	glPushMatrix();
+
+	glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT,gtf_BillboardAmbient);
+	glMaterialfv(GL_FRONT_AND_BACK,GL_DIFFUSE,gtf_BillboardDiffuse);
+	glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,gtf_BillboardEmission);
+	glMaterialf(GL_FRONT_AND_BACK,GL_SHININESS,0);
+	
+	glDepthMask(GL_FALSE);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_ONE,GL_ONE);
+
+		glTranslatef( m_Bodies[planetRing.index].GetPosition().X, m_Bodies[planetRing.index].GetPosition().Y, m_Bodies[planetRing.index].GetPosition().Z );
+		glRotatef( planetRing.angle , 0, 0, 1);
+
+		float resolution = 30;
+		for(int j = 0; j < resolution; j++)
+		{
+			glBindTexture(GL_TEXTURE_2D,planetRing.ringId);
+			glBegin(GL_QUADS);
+			{
+
+				glTexCoord2f(0.0f, 1.0f); glVertex3f(planetRing.innerRadius*cos(((float)2*PI/resolution)*j), 0, planetRing.innerRadius*sin(((float)2*PI/resolution)*j));
+				glTexCoord2f(1.0f, 1.0f);glVertex3f(planetRing.outerRadius*cos(((float)2*PI/resolution)*j), 0, planetRing.outerRadius*sin(((float)2*PI/resolution)*j));
+				glTexCoord2f(1.0f, 0.0f);glVertex3f(planetRing.outerRadius*cos(((float)2*PI/resolution)*(j+1)), 0, planetRing.outerRadius*sin(((float)2*PI/resolution)*(j+1)));
+				glTexCoord2f(0.0f, 0.0f);glVertex3f(planetRing.innerRadius*cos(((float)2*PI/resolution)*(j+1)), 0, planetRing.innerRadius*sin(((float)2*PI/resolution)*(j+1)));
+			}
+			glEnd();
+		}
+
+	glDisable (GL_BLEND);
+	glDepthMask(GL_TRUE);
+
+	glPopMatrix();
+	glEnable(GL_LIGHTING);
+}
 
 /* Camera Function */ 
 

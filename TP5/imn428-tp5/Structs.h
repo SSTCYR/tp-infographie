@@ -45,4 +45,14 @@ typedef struct
 
 } Light;
 
+struct Ring
+{
+	float			innerRadius;
+	float			outerRadius;
+	float			angle;
+	int				index;
+	unsigned int	ringId;
+	Ring(float inR, float ouR, float ang, int i, unsigned int id) : innerRadius(inR), outerRadius(ouR), angle(ang), index(i), ringId(id) {}
+};
+
 #endif // STRUCTS_H
