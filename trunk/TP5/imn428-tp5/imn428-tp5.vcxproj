@@ -87,10 +87,8 @@
     <ClCompile Include="ColorRGB.cpp" />
     <ClCompile Include="imn428-tp5.cpp" />
     <ClCompile Include="RGBImage.cpp" />
-    <ClCompile Include="RingPlanet.cpp" />
     <ClCompile Include="SolarSystemTimer.cpp" />
     <ClCompile Include="SolarSystemManager.cpp" />
-    <ClCompile Include="Sun.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BitmapHandling.h" />
@@ -98,12 +96,10 @@
     <ClInclude Include="CelestialBody.h" />
     <ClInclude Include="ColorRGB.h" />
     <ClInclude Include="RGBImage.h" />
-    <ClInclude Include="RingPlanet.h" />
     <ClInclude Include="SolarSystemTimer.h" />
     <ClInclude Include="Source\SolarSystem_Config.h" />
     <ClInclude Include="Structs.h" />
     <ClInclude Include="SolarSystemManager.h" />
-    <ClInclude Include="Sun.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

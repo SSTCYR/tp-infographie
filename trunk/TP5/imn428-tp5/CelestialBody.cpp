@@ -29,16 +29,7 @@ CelestialBody::CelestialBody()
 {
 }
 
-CelestialBody::CelestialBody(float radius,	float orbitRadius, float revolution, float rotation, char *planetName)
-{
-	Construct(radius, orbitRadius, revolution, rotation, planetName);
-}
-
-CelestialBody::~CelestialBody()
-{
-}
-
-void CelestialBody::Construct(float radius, float orbitRadius, float revolution, float rotation, char *planetName)
+CelestialBody::CelestialBody(float radius,	float orbitRadius, float revolution, float rotation, char *planetName, bool hasRing)
 {
 	m_Radius = radius*MULTIPLIER_EQUAT_RAD;
 	m_OrbitRadius = orbitRadius*MULTIPLIER_ORBIT_RAD;
@@ -51,7 +42,13 @@ void CelestialBody::Construct(float radius, float orbitRadius, float revolution,
 	m_RotationTime = 0;
 	m_RevolutionTime = 0;
 	m_PlanetName = planetName;
+	m_HasRing = hasRing;
 }
+
+CelestialBody::~CelestialBody()
+{
+}
+
 
 // TODO : Draw satellite when needed
 void CelestialBody::Update(float elapsedTime, Position centerOfRevolution)
@@ -138,4 +135,9 @@ float CelestialBody::GetAngle() const
 char* CelestialBody::GetPlanetName() const
 {
 	return m_PlanetName;
+}
+
+bool CelestialBody::HasRing() const
+{
+	return m_HasRing;
 }
