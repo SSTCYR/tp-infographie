@@ -35,6 +35,7 @@ public:
 	void Update();
 	void Rotate(int x, int y);
 	void Zoom(int distance);
+	//void Camera::LookAtUpdate(CelestialBody m_currentCelestialBody);
 };
 
 #endif // CAMERA_H

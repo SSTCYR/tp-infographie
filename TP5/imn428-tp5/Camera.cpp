@@ -8,6 +8,15 @@ Camera::~Camera()
 {
 }
 
+/* Camera::LookAtUpdate(CelestialBody m_currentCelestialBody)
+{
+
+	gluLookAt(	0,10,50,
+				m_currentCelestialBody.GetPosition().X,	m_currentCelestialBody.GetPosition().Y,	m_currentCelestialBody.GetPosition().Z,
+				0,1,0);
+
+}*/
+
 void Camera::Rotate(int x, int y)
 {
 	m_Theta -= x;

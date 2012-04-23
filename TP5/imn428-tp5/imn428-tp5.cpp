@@ -29,6 +29,14 @@ void		RenderScene(float af_DeltaTime);
 void		RenderSpinningSphere(float af_DeltaTime, int index);
 void		RenderTransparentBillboard(float af_DeltaTime);
 
+void		Draw_Skybox(float x, float y, float z, float width, float height, float length);
+
+void		KeyboardFunc(unsigned char key, int x, int y);
+void		MouseMoveFunc(int x, int y);
+void		MouseClickFunc(int button, int state, int x, int y);
+void		SetcurrentKey(int key);
+int			GetcurrentKey();
+
 const int	gs32_WindowWidth	= 960;
 const int	gs32_WindowHeight	= 600;
 const float	gf_FieldofViewY		= 62.7375f;
@@ -39,6 +47,7 @@ const float gf_FrameTime		= 0.015f;
 
 unsigned int gu32_PlanetTexId[10];
 unsigned int gu32_BillboardTexId;
+unsigned int gu32_Skybox;
 
 float		gtf_LightColor[4]	 = {1.0f, 1.0f, 1.0f, 1.0f};
 float		gtf_LightPosition[4] = {0.0f,0.0f,0.0f,1.0f};
@@ -56,9 +65,11 @@ float		gtf_BillboardEmission[4] = {1.0f, 1.0f, 1.0f, 1.0f};
 float		gtf_BillboardPosition[4]= {0.0f,0.0f,0.0f, 1.0f};
 float		gf_BillboardHalfSize = 8;
 
-float		gtf_CameraPosition[3]	= {0,0,30};
+float		gtf_CameraPosition[3]	= {0,10,50};
 float		gtf_CameraLookAt[3]		= {0,0,0};
 float		gtf_CameraUp[3]			= {0,1,0};
+
+int m_currentKey = 0;
 
 void CreateSolarSystem()
 {
@@ -90,12 +101,15 @@ int main(int argc, char** argv)
 	glutInit(&argc,argv);
 	glutInitDisplayMode(GLUT_RGBA|GLUT_DOUBLE|GLUT_ALPHA|GLUT_DEPTH);
 	glutInitWindowSize(gs32_WindowWidth,gs32_WindowHeight);
-	glutCreateWindow("Very simple example of what you need to create your project.");
+	glutCreateWindow("Solar system.");
 
 	CreateSolarSystem();
 
 	glutIdleFunc( IdleCallBack );
 	glutDisplayFunc(	IdleCallBack );
+	glutKeyboardFunc( KeyboardFunc );
+	glutMouseFunc( MouseClickFunc );      
+    glutMotionFunc( MouseMoveFunc ); 
 
 	InitScene();
 	glutMainLoop();
@@ -148,6 +162,16 @@ void InitScene()
 
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);	// Linear Filtering
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);	// Linear Filtering
+
+	//load the skybox's texture in memory	
+	LoadBmp("Resources/texture_starbg.bmp",o_TmpTexture);
+
+	glGenTextures(1,&gu32_Skybox);
+	glBindTexture(GL_TEXTURE_2D,gu32_Skybox);
+	glTexImage2D(GL_TEXTURE_2D,0,3,o_TmpTexture.GetWidth(),o_TmpTexture.GetHeight(),0,GL_RGB,GL_FLOAT,o_TmpTexture.GetRasterData());
+
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);	// Linear Filtering
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);	// Linear Filtering
 }
 
 void IdleCallBack()
@@ -165,7 +189,7 @@ void IdleCallBack()
 
 void RenderScene(float af_DeltaTime)
 {
-	glClearColor(0.0,0.0,0.0,1);
+	glClearColor(1.0,0.0,0.0,1);
 	glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	//Camera setup
@@ -189,18 +213,74 @@ void RenderScene(float af_DeltaTime)
 	glLightfv(	GL_LIGHT0,	GL_DIFFUSE,			gtf_LightColor);
 	glLightfv(	GL_LIGHT0,	GL_SPECULAR,		gtf_LightColor);
 	glLightf(	GL_LIGHT0,	GL_SPOT_CUTOFF,		180.0f);
-	
-	
-	for(int i=1;i<10;i++) m_Bodies[i].DrawOrbit();
-	for(int i=0;i<10;i++) RenderSpinningSphere(af_DeltaTime, i);
+
+	Draw_Skybox(0.0,0.0,0.0,100.0,100.0,(float)PLUTO_ORBIT_RADIUS*MULTIPLIER_ORBIT_RAD*(1.5));
+
+	for(int i=1;i<11;i++) m_Bodies[i].DrawOrbit();
+	for(int i=0;i<11;i++) RenderSpinningSphere(af_DeltaTime, i);
 	RenderTransparentBillboard(af_DeltaTime);
 
 	glutSwapBuffers();
 }
 
+void Draw_Skybox(float x, float y, float z, float width, float height, float length)
+{
+	// Center the Skybox around the given x,y,z position
+	x = x - width  / 2;
+	y = y - height / 2;
+	z = z - length / 2;
+
+	// Draw Back side
+	glBindTexture(GL_TEXTURE_2D, gu32_Skybox);
+	glBegin(GL_QUADS);		
+		glTexCoord2f(1.0f, 0.0f); glVertex3f(x+width, y,		z);
+		glTexCoord2f(1.0f, 1.0f); glVertex3f(x+width, y+height, z); 
+		glTexCoord2f(0.0f, 1.0f); glVertex3f(x,		  y+height,	z);
+		glTexCoord2f(0.0f, 0.0f); glVertex3f(x,		  y,		z);
+	glEnd();
+
+	// Draw Left side
+	glBindTexture(GL_TEXTURE_2D, gu32_Skybox);
+	glBegin(GL_QUADS);		
+		glTexCoord2f(1.0f, 1.0f); glVertex3f(x,		  y+height,	z);	
+		glTexCoord2f(0.0f, 1.0f); glVertex3f(x,		  y+height,	z+length); 
+		glTexCoord2f(0.0f, 0.0f); glVertex3f(x,		  y,		z+length);
+		glTexCoord2f(1.0f, 0.0f); glVertex3f(x,		  y,		z);		
+	glEnd();
+
+	// Draw Right side
+	glBindTexture(GL_TEXTURE_2D, gu32_Skybox);
+	glBegin(GL_QUADS);		
+		glTexCoord2f(0.0f, 0.0f); glVertex3f(x+width, y,		z);
+		glTexCoord2f(1.0f, 0.0f); glVertex3f(x+width, y,		z+length);
+		glTexCoord2f(1.0f, 1.0f); glVertex3f(x+width, y+height,	z+length); 
+		glTexCoord2f(0.0f, 1.0f); glVertex3f(x+width, y+height,	z);
+	glEnd();
+
+	// Draw Up side
+	glBindTexture(GL_TEXTURE_2D, gu32_Skybox);
+	glBegin(GL_QUADS);		
+		glTexCoord2f(0.0f, 0.0f); glVertex3f(x+width, y+height, z);
+		glTexCoord2f(1.0f, 0.0f); glVertex3f(x+width, y+height, z+length); 
+		glTexCoord2f(1.0f, 1.0f); glVertex3f(x,		  y+height,	z+length);
+		glTexCoord2f(0.0f, 1.0f); glVertex3f(x,		  y+height,	z);
+	glEnd();
+
+	// Draw Down side
+	glBindTexture(GL_TEXTURE_2D, gu32_Skybox);
+	glBegin(GL_QUADS);		
+		glTexCoord2f(0.0f, 0.0f); glVertex3f(x,		  y,		z);
+		glTexCoord2f(1.0f, 0.0f); glVertex3f(x,		  y,		z+length);
+		glTexCoord2f(1.0f, 1.0f); glVertex3f(x+width, y,		z+length); 
+		glTexCoord2f(0.0f, 1.0f); glVertex3f(x+width, y,		z);
+	glEnd();
+
+}
+
 void RenderSpinningSphere(float af_DeltaTime, int i)
 {
 	m_Bodies[i].Update(af_DeltaTime);
+	
 	
 	if(i==0)
 	{
@@ -293,4 +373,180 @@ void RenderTransparentBillboard(float af_DeltaTime)
 	glDisable(GL_BLEND);
 	glDepthMask(GL_TRUE);
 
+}
+
+
+/* Camera Function */ 
+
+void KeyboardFunc(unsigned char key, int x, int y)
+{
+	
+switch (key)
+  {
+	case '0':  
+		if(m_currentKey == (int)key)
+		{
+			printf("Already on sun!\n");
+		}
+		else
+		{
+			printf("The sun!\n");
+		}
+		SetcurrentKey((int)key);
+		break;
+		
+		// Sun
+	case '1':   
+		if(m_currentKey == (int)key)
+		{
+			
+		}
+		else
+		{
+			printf("Focus on mercury\n");
+		}
+		SetcurrentKey((int)key);
+		break;
+	case '2':   
+		if(m_currentKey == (int)key)
+		{
+			printf("Follow venus\n");
+		}
+		else
+		{
+			printf("Focus on venus\n");
+		}
+		SetcurrentKey((int)key);
+		break;
+	case '3':   
+		if(m_currentKey == (int)key)
+		{
+			printf("Follow earth\n");
+		}
+		else
+		{
+			printf("Focus on earth\n");
+		}
+		SetcurrentKey((int)key);
+		break;
+	case '4':   
+		if(m_currentKey == (int)key)
+		{
+			printf("Follow mars\n");
+		}
+		else
+		{
+			printf("Focus on mars\n");
+		}
+		SetcurrentKey((int)key);
+		break;
+	case '5':   
+		if(m_currentKey == (int)key)
+		{
+			printf("Follow jupiter\n");
+		}
+		else
+		{
+			printf("Focus on jupiter\n");
+		}
+		SetcurrentKey((int)key);
+		break;
+	case '6':   
+		if(m_currentKey == (int)key)
+		{
+			printf("Follow saturn\n");
+		}
+		else
+		{
+			printf("Focus on saturn\n");
+		}
+		SetcurrentKey((int)key);
+		break;
+	case '7':   
+		if(m_currentKey == (int)key)
+		{
+			printf("Follow uranus\n");
+		}
+		else
+		{
+			printf("Focus on uranus\n");
+		}
+		SetcurrentKey((int)key);
+		break;
+	case '8':   
+		if(m_currentKey == (int)key)
+		{
+			printf("Follow neptune\n");
+		}
+		else
+		{
+			printf("Focus on neptune\n");
+		}
+		SetcurrentKey((int)key);
+		break;
+	case '9':   
+		if(m_currentKey == (int)key)
+		{
+			printf("Follow pluto\n");
+		}
+		else
+		{
+			printf("Focus on pluto\n");
+		}
+		SetcurrentKey((int)key);
+		break;
+	
+  }
+}
+
+void MouseClickFunc(int button, int state, int x, int y)
+{
+	switch(button)
+	{
+		case (GLUT_LEFT_BUTTON):
+		{
+			if(state == GLUT_DOWN)
+			{
+			}
+			break;
+		}
+		case (GLUT_MIDDLE_BUTTON):
+		{
+			if(state == GLUT_DOWN)
+			{
+			}
+			break;
+		}
+		case (GLUT_RIGHT_BUTTON):
+		{
+			break;
+		}
+		default:
+		{
+			if(state == GLUT_DOWN)
+			{
+			}
+			break;
+		}
+
+		glutPostRedisplay();
+	}
+}
+
+void MouseMoveFunc(int x, int y)
+{
+}
+
+
+/* Get/Set function */
+
+
+void SetcurrentKey(int key)
+{
+	m_currentKey = key;
+}
+
+int GetcurrentKey()
+{
+	return m_currentKey;
 }
