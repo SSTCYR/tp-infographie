@@ -43,7 +43,7 @@ int*		UpdateCameraLookAt();
 const int	gs32_WindowWidth	= 960;
 const int	gs32_WindowHeight	= 600;
 const float	gf_FieldofViewY		= 62.7375f;
-const float	gf_FarClip			= 200.0f;
+const float	gf_FarClip			= 800.0f;
 const float gf_NearClip			= 0.1f;
 
 const float gf_FrameTime		= 0.015f;
@@ -198,7 +198,7 @@ void IdleCallBack()
 
 void RenderScene(float af_DeltaTime)
 {
-	glClearColor(1.0,0.0,0.0,1);
+	glClearColor(0.0,0.0,0.0,1);
 	glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	//Camera setup
@@ -226,6 +226,8 @@ void RenderScene(float af_DeltaTime)
 				gtf_CameraUp[0],		gtf_CameraUp[1],		gtf_CameraUp[2]);
 
 	//Light Setup
+	for(int i=1;i<10;i++) m_Bodies[i].DrawOrbit(Position());
+	m_Bodies[10].DrawOrbit(m_Bodies[3].GetPosition());
 
 	glEnable(GL_LIGHT0);
 
@@ -233,13 +235,11 @@ void RenderScene(float af_DeltaTime)
 	glLightfv(	GL_LIGHT0,	GL_DIFFUSE,			gtf_LightColor);
 	glLightfv(	GL_LIGHT0,	GL_SPECULAR,		gtf_LightColor);
 	glLightf(	GL_LIGHT0,	GL_SPOT_CUTOFF,		180.0f);
+	
+	Draw_Skybox(0.0,0.0,0.0,200.0,200.0,200);//(float)PLUTO_ORBIT_RADIUS*MULTIPLIER_ORBIT_RAD*(1.5));
 
-	Draw_Skybox(0.0,0.0,0.0,100.0,100.0,(float)PLUTO_ORBIT_RADIUS*MULTIPLIER_ORBIT_RAD*(1.5));
-
-	for(int i=1;i<10;i++) m_Bodies[i].DrawOrbit(Position());
-	m_Bodies[10].DrawOrbit(m_Bodies[3].GetPosition());
 	for(int i=0;i<11;i++) RenderSpinningSphere(af_DeltaTime, i);
-	RenderTransparentBillboard(af_DeltaTime);
+	//RenderTransparentBillboard(af_DeltaTime);
 
 	glutSwapBuffers();
 }
