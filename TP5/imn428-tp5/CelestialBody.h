@@ -16,6 +16,7 @@ protected:
 	Position m_Position;
 	float m_Angle;
 	float m_RotationTime;
+	float m_RevolutionTime;
 	char *m_PlanetName;
 	CelestialBody *m_Satellite;
 
