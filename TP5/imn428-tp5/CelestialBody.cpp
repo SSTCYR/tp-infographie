@@ -38,7 +38,8 @@ CelestialBody::CelestialBody(float radius,	float orbitRadius, float revolution, 
 	m_Position.X = m_OrbitRadius;
 	m_Position.Y = 0;
 	m_Position.Z = 0;
-	m_Angle = 0;
+	m_RotationAngle = 0;
+	m_RevolutionAngle = 0;
 	m_RotationTime = 0;
 	m_RevolutionTime = 0;
 	m_PlanetName = planetName;
@@ -60,10 +61,10 @@ void CelestialBody::Update(float elapsedTime, Position centerOfRevolution)
 		m_RevolutionTime -= m_Revolution;
 	}
 
-	float theta = m_RevolutionTime/m_Revolution*PI*2;
+	m_RevolutionAngle = m_RevolutionTime/m_Revolution*PI*2;
 
-	m_Position.Z = 0*cos(theta) - m_OrbitRadius*sin(theta);
-	m_Position.X = 0*sin(theta) + m_OrbitRadius*cos(theta);
+	m_Position.Z = 0*cos(m_RevolutionAngle) - m_OrbitRadius*sin(m_RevolutionAngle);
+	m_Position.X = 0*sin(m_RevolutionAngle) + m_OrbitRadius*cos(m_RevolutionAngle);
 
 	m_Position.Z += centerOfRevolution.Z;
 	m_Position.X += centerOfRevolution.X;
@@ -75,10 +76,9 @@ void CelestialBody::Update(float elapsedTime, Position centerOfRevolution)
 		m_RotationTime -= m_Rotation;
 	}
 
-	m_Angle = (float)m_RotationTime / m_Rotation * 360.0;
+	m_RotationAngle = (float)m_RotationTime / m_Rotation * 360.0*3;
 }
 
-//TODO : les bonnes couleurs de lignes, Attention! Les orbites ne sont tellement pas là!
 void CelestialBody::DrawOrbit(Position centerOfRevolution)
 {
 	glDisable(GL_LIGHTING);
@@ -127,9 +127,14 @@ float CelestialBody::GetRevolution() const
 	return m_Revolution;
 }
 
-float CelestialBody::GetAngle() const
+float CelestialBody::GetRotationAngle() const
 {
-	return m_Angle;
+	return m_RotationAngle;
+}
+
+float CelestialBody::GetRevolutionAngle() const
+{
+	return m_RevolutionAngle;
 }
 
 char* CelestialBody::GetPlanetName() const
