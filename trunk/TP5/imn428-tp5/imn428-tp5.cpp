@@ -39,6 +39,7 @@ int			GetcurrentKey();
 
 float*		UpdateCameraLookAt();
 float*		UpdateCameraFocus();
+float*		UpdateCameraPosition(float af_DeltaTime, float revolution);
 
 const int	gs32_WindowWidth	= 960;
 const int	gs32_WindowHeight	= 600;
@@ -72,8 +73,11 @@ float		gtf_BillboardPosition[4]= {0.0f,0.0f,0.0f, 1.0f};
 float		gf_BillboardHalfSize = 8;
 
 
-float		gtf_InitCameraPosition[3]	= {30,20,-30};
-float		gtf_CameraPosition[3]	= {0,20,30};
+float		gtf_InitCameraPosition[3]	= {0,10,30};
+float		gtf_CameraPosition[3]	= {0,10,30};
+float		gtf_FixedCameraPosition[3]	= {0,10,30};
+
+float		revolutionTime = 0;
 
 float		gtf_InitCameraLookAt[3]	= {0,0,0};
 float		gtf_CameraLookAt[3]		= {0,0,0};
@@ -101,7 +105,7 @@ void CreateSolarSystem()
 	m_Bodies[5] = jupiter;
 	CelestialBody saturn(SATURN_EQUATOR_RADIUS, SATURN_ORBIT_RADIUS, SATURN_REVO_PERIOD, SATURN_ROTATION_PERIOD, "saturn", true);
 	m_Bodies[6] = saturn;
-	CelestialBody uranus(URANUS_EQUATOR_RADIUS, URANUS_ORBIT_RADIUS, URANUS_REVO_PERIOD, URANUS_ROTATION_PERIOD, "uranus", true);
+	CelestialBody uranus(URANUS_EQUATOR_RADIUS, URANUS_ORBIT_RADIUS, URANUS_REVO_PERIOD/10, URANUS_ROTATION_PERIOD, "uranus", true);
 	m_Bodies[7] = uranus;
 	CelestialBody neptune(NEPTUNE_EQUATOR_RADIUS, NEPTUNE_ORBIT_RADIUS, NEPTUNE_REVO_PERIOD, NEPTUNE_ROTATION_PERIOD, "neptune", false);
 	m_Bodies[8] = neptune;
@@ -247,16 +251,21 @@ void RenderScene(float af_DeltaTime)
 		gtf_CameraLookAt[1] = tab[1];
 		gtf_CameraLookAt[2] = tab[2];
 
-		gtf_CameraPosition[0] = gtf_InitCameraPosition[0];
-		gtf_CameraPosition[1] = gtf_InitCameraPosition[1];
-		gtf_CameraPosition[2] = gtf_InitCameraPosition[2];
-
 	}
 	else
 	{
 		//To do : Faire la vu derrière la caméra. Donc x = Pos.X , y = Revolution de la planète, z = Pos.Z. 
 		//Il faut ajouter un cos/sin surêment pour faire tournée la caméra.
-		
+		float* tab=UpdateCameraFocus();
+		gtf_CameraLookAt[0] = tab[0];
+		gtf_CameraLookAt[1] = tab[1];
+		gtf_CameraLookAt[2] = tab[2];
+
+		float* pos=UpdateCameraPosition(af_DeltaTime, tab[3]);
+		gtf_CameraPosition[0] = pos[0];
+		gtf_CameraPosition[1] = pos[1];
+		gtf_CameraPosition[2] = pos[2];
+
 	}
 
 	gluLookAt(	gtf_CameraPosition[0],	gtf_CameraPosition[1],	gtf_CameraPosition[2],
@@ -272,7 +281,7 @@ void RenderScene(float af_DeltaTime)
 	glLightfv(	GL_LIGHT0,	GL_SPECULAR,		gtf_LightColor);
 	glLightf(	GL_LIGHT0,	GL_SPOT_CUTOFF,		180.0f);
      
-	Draw_Skybox(0.0,0.0,0.0,200.0,200.0,200.0);       
+	Draw_Skybox(gtf_CameraPosition[0],gtf_CameraPosition[1],gtf_CameraPosition[2],300.0,300.0,300.0);       
 
 	for(int i=0;i<11;i++) RenderSpinningSphere(af_DeltaTime, i);
 
@@ -380,7 +389,7 @@ void RenderSpinningSphere(float af_DeltaTime, int i)
 		glBindTexture(GL_TEXTURE_2D,gu32_PlanetTexId[i]);
 
 		glTranslatef( m_Bodies[i].GetPosition().X, m_Bodies[i].GetPosition().Y, m_Bodies[i].GetPosition().Z );
-		glRotatef( m_Bodies[i].GetAngle() , 0, 1, 0);
+		glRotatef( m_Bodies[i].GetRotationAngle() , 0, 1, 0);
 		glRotatef( 90,1,0,0);
 
 		GLUquadricObj *po_SphereMesh = gluNewQuadric();
@@ -482,8 +491,10 @@ void RenderRing(Ring planetRing)
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_ONE,GL_ONE);
 
-		glTranslatef( m_Bodies[planetRing.index].GetPosition().X, m_Bodies[planetRing.index].GetPosition().Y, m_Bodies[planetRing.index].GetPosition().Z );
+		glRotatef( m_Bodies[planetRing.index].GetRevolutionAngle()*180/PI , 0, 1, 0);
+		glTranslatef(m_Bodies[planetRing.index].GetOrbitRadius(), 0, 0);
 		glRotatef( planetRing.angle , 0, 0, 1);
+
 
 		float resolution = 30;
 		for(int j = 0; j < resolution; j++)
@@ -525,6 +536,7 @@ switch (key)
 		{
 			SetcurrentKey(0);
 			m_Focus = true;
+			revolutionTime = 0;
 			RenderScene(go_FrameTimer.GetLapTime());
 		}
 		break;
@@ -541,6 +553,7 @@ switch (key)
 			printf("Focus on mercury\n");
 			SetcurrentKey(1);
 			m_Focus = true;
+			revolutionTime = 0;
 			RenderScene(go_FrameTimer.GetLapTime());
 		}
 		break;
@@ -557,6 +570,7 @@ switch (key)
 			printf("Focus on venus\n");
 			SetcurrentKey(2);
 			m_Focus = true;
+			revolutionTime = 0;
 			RenderScene(go_FrameTimer.GetLapTime());
 		}
 		break;
@@ -573,6 +587,8 @@ switch (key)
 			printf("Focus on earth\n");
 			SetcurrentKey(3);
 			m_Focus = true;
+			revolutionTime = 0;
+			RenderScene(go_FrameTimer.GetLapTime());
 		}
 		break;
 	case '4':   
@@ -588,6 +604,8 @@ switch (key)
 			printf("Focus on mars\n");
 			m_Focus = true;
 			SetcurrentKey(4);
+			revolutionTime = 0;
+			RenderScene(go_FrameTimer.GetLapTime());
 		}
 		break;
 	case '5':   
@@ -603,6 +621,8 @@ switch (key)
 			printf("Focus on jupiter\n");
 			SetcurrentKey(5);
 			m_Focus = true;
+			revolutionTime = 0;
+			RenderScene(go_FrameTimer.GetLapTime());
 		}
 		break;
 	case '6':   
@@ -618,6 +638,8 @@ switch (key)
 			printf("Focus on saturn\n");
 			SetcurrentKey(6);
 			m_Focus = true;
+			revolutionTime = 0;
+			RenderScene(go_FrameTimer.GetLapTime());
 		}
 		break;
 	case '7':   
@@ -633,6 +655,8 @@ switch (key)
 			printf("Focus on uranus\n");
 			SetcurrentKey(7);
 			m_Focus = true;
+			revolutionTime = 0;
+			RenderScene(go_FrameTimer.GetLapTime());
 		}
 		break;
 	case '8':   
@@ -648,6 +672,8 @@ switch (key)
 			printf("Focus on neptune\n");
 			SetcurrentKey(8);
 			m_Focus = true;
+			revolutionTime = 0;
+			RenderScene(go_FrameTimer.GetLapTime());
 		}
 		break;
 	case '9':   
@@ -663,6 +689,8 @@ switch (key)
 			printf("Focus on pluto\n");
 			SetcurrentKey(9);
 			m_Focus = true;
+			revolutionTime = 0;
+			RenderScene(go_FrameTimer.GetLapTime());
 		}
 		break;
 	
@@ -751,6 +779,32 @@ float* UpdateCameraFocus()
 		info[1] = m_Bodies[m_currentKey].GetPosition().Y;
 		info[2] = m_Bodies[m_currentKey].GetPosition().Z; 
 		info[3] = m_Bodies[m_currentKey].GetRevolution(); 
+	}
+
+	return pointer;
+}
+
+float* UpdateCameraPosition(float af_DeltaTime, float revolution)
+{
+	float* pointer;
+	float info[3];
+
+	if (m_currentKey == 0)
+	{
+		pointer = gtf_InitCameraPosition;
+	}
+	
+	else
+	{
+		float X = gtf_FixedCameraPosition[0]+m_Bodies[m_currentKey].GetOrbitRadius();
+		float Z = gtf_FixedCameraPosition[2];
+
+		info[2] = (Z)*cos(m_Bodies[m_currentKey].GetRevolutionAngle()) - (X)*sin(m_Bodies[m_currentKey].GetRevolutionAngle());
+		info[1] = gtf_FixedCameraPosition[1];
+		info[0] = (Z)*sin(m_Bodies[m_currentKey].GetRevolutionAngle()) + (X)*cos(m_Bodies[m_currentKey].GetRevolutionAngle());
+
+		pointer = info;
+
 	}
 
 	return pointer;

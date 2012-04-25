@@ -14,7 +14,8 @@ protected:
 	float m_Revolution;
 	float m_Rotation;
 	Position m_Position;
-	float m_Angle;
+	float m_RotationAngle;
+	float m_RevolutionAngle;
 	float m_RotationTime;
 	float m_RevolutionTime;
 	char *m_PlanetName;
@@ -35,7 +36,8 @@ public:
 	float GetRadius() const;
 	float GetRotation() const;
 	float GetRevolution() const;
-	float GetAngle() const;
+	float GetRotationAngle() const;
+	float GetRevolutionAngle() const;
 	char* GetPlanetName() const;
 	bool HasRing() const;
 };
