@@ -19,6 +19,8 @@
 //Constant used throughout the example
 #define PI							3.14159265358
 
+//Functions 
+
 void		InitScene();
 void		CleanupScene();
 void		IdleCallBack();
@@ -40,6 +42,14 @@ int			GetcurrentKey();
 float*		UpdateCameraLookAt();
 float*		UpdateCameraFocus();
 float*		UpdateCameraPosition(float af_DeltaTime, float revolution);
+
+double		deg2rad( double deg );
+double		rad2deg( double rad );
+
+
+void		setCamera(float af_DeltaTime);
+
+// Variables 
 
 const int	gs32_WindowWidth	= 960;
 const int	gs32_WindowHeight	= 600;
@@ -66,15 +76,15 @@ CelestialBody m_Bodies[11];
 Ring		ringSaturn(1.05*MULTIPLIER_EQUAT_RAD*SATURN_EQUATOR_RADIUS, 2*MULTIPLIER_EQUAT_RAD*SATURN_EQUATOR_RADIUS, 0, 6, 0);
 Ring		ringUranus(1.2*MULTIPLIER_EQUAT_RAD*URANUS_EQUATOR_RADIUS, 1.6*MULTIPLIER_EQUAT_RAD*URANUS_EQUATOR_RADIUS, 90, 7, 0);
 
-float		gtf_BillboardAmbient[4] = {0.2f, 0.2f, 0.2f, 0.2f};
-float		gtf_BillboardDiffuse[4] = {1.0f, 1.0f, 1.0f, 1.0f};
-float		gtf_BillboardEmission[4] = {1.0f, 1.0f, 1.0f, 1.0f};
-float		gtf_BillboardPosition[4]= {0.0f,0.0f,0.0f, 1.0f};
-float		gf_BillboardHalfSize = 8;
+float		gtf_BillboardAmbient[4]		= {0.2f, 0.2f, 0.2f, 0.2f};
+float		gtf_BillboardDiffuse[4]		= {1.0f, 1.0f, 1.0f, 1.0f};
+float		gtf_BillboardEmission[4]	= {1.0f, 1.0f, 1.0f, 1.0f};
+float		gtf_BillboardPosition[4]	= {0.0f,0.0f,0.0f, 1.0f};
+float		gf_BillboardHalfSize		= 8;
 
 
 float		gtf_InitCameraPosition[3]	= {0,10,30};
-float		gtf_CameraPosition[3]	= {0,10,30};
+float		gtf_CameraPosition[3]		= {0,10,30};
 float		gtf_FixedCameraPosition[3]	= {0,10,30};
 
 float		revolutionTime = 0;
@@ -83,11 +93,14 @@ float		gtf_InitCameraLookAt[3]	= {0,0,0};
 float		gtf_CameraLookAt[3]		= {0,0,0};
 float		gtf_CameraUp[3]			= {0,1,0};
 
-int m_currentKey = 0;
+int			m_currentKey = 0;
 
-static Timer go_FrameTimer;
+static		Timer go_FrameTimer;
 
-boolean m_Focus = true;
+boolean		m_Focus = true;
+
+MouseEvent	gLastMouseEvt;			
+CamInfo		gCam;
 
 void CreateSolarSystem()
 {
@@ -128,7 +141,8 @@ int main(int argc, char** argv)
 	glutDisplayFunc(	IdleCallBack );
 	glutKeyboardFunc( KeyboardFunc );
 	glutMouseFunc( MouseClickFunc );      
-    glutMotionFunc( MouseMoveFunc ); 
+    glutMotionFunc( MouseMoveFunc );
+
 
 	InitScene();
 	glutMainLoop();
@@ -214,6 +228,11 @@ void InitScene()
 
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);	// Linear Filtering
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);	// Linear Filtering
+
+	gCam.theta= 0.0;
+    gCam.phi = 30.0;
+    gCam.r = 30.0;
+
 }
 
 void IdleCallBack()
@@ -224,26 +243,13 @@ void IdleCallBack()
 	{
 		
 		RenderScene(go_FrameTimer.GetLapTime());
-		//CameraUpdate();
 		go_FrameTimer.ResetTimer();
 	}
 }
 
 
-void RenderScene(float af_DeltaTime)
+void setCamera(float af_DeltaTime)
 {
-	glClearColor(0.0,0.0,0.0,1);
-	glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-
-	//Camera Setup
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-
-	gluPerspective(gf_FieldofViewY,gs32_WindowWidth/(float)gs32_WindowHeight,gf_NearClip,gf_FarClip);
-
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
 	if(m_Focus==false)
 	{
 		float* tab=UpdateCameraLookAt();
@@ -266,12 +272,30 @@ void RenderScene(float af_DeltaTime)
 		gtf_CameraPosition[1] = pos[1];
 		gtf_CameraPosition[2] = pos[2];
 
+
 	}
 
 	gluLookAt(	gtf_CameraPosition[0],	gtf_CameraPosition[1],	gtf_CameraPosition[2],
 				gtf_CameraLookAt[0],	gtf_CameraLookAt[1],	gtf_CameraLookAt[2],
 				gtf_CameraUp[0],		gtf_CameraUp[1],		gtf_CameraUp[2]);
 	
+}
+
+void RenderScene(float af_DeltaTime)
+{
+	glClearColor(0.0,0.0,0.0,1);
+	glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+
+	//Camera Setup
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+
+	gluPerspective(gf_FieldofViewY,gs32_WindowWidth/(float)gs32_WindowHeight,gf_NearClip,gf_FarClip);
+
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	setCamera(af_DeltaTime);
 	//Light Setup
 	
 	glEnable(GL_LIGHT0);
@@ -537,6 +561,9 @@ switch (key)
 			SetcurrentKey(0);
 			m_Focus = true;
 			revolutionTime = 0;
+			gtf_FixedCameraPosition[0] = gtf_InitCameraPosition[0];
+			gtf_FixedCameraPosition[1] = gtf_InitCameraPosition[1];
+			gtf_FixedCameraPosition[2] = gtf_InitCameraPosition[2];
 			RenderScene(go_FrameTimer.GetLapTime());
 		}
 		break;
@@ -700,40 +727,74 @@ switch (key)
 
 void MouseClickFunc(int button, int state, int x, int y)
 {
-	switch(button)
+	if(m_Focus == true)
 	{
-		case (GLUT_LEFT_BUTTON):
+		if( state == GLUT_DOWN )
 		{
-			if(state == GLUT_DOWN)
-			{
-			}
-			break;
+			gLastMouseEvt.button = button;
+			gLastMouseEvt.x = x;
+			gLastMouseEvt.y = y;
 		}
-		case (GLUT_MIDDLE_BUTTON):
+		else
+		if( state == GLUT_UP )
 		{
-			if(state == GLUT_DOWN)
-			{
-			}
-			break;
+			gLastMouseEvt.button = -1;
+			gLastMouseEvt.x = -1;
+			gLastMouseEvt.y = -1;
 		}
-		case (GLUT_RIGHT_BUTTON):
-		{
-			break;
-		}
-		default:
-		{
-			if(state == GLUT_DOWN)
-			{
-			}
-			break;
-		}
-
-		glutPostRedisplay();
 	}
 }
 
+
+
 void MouseMoveFunc(int x, int y)
 {
+	if(m_Focus == true)
+	{
+		int	dx = x - gLastMouseEvt.x;
+		int	dy = -y + gLastMouseEvt.y;
+		float m[16];
+		gLastMouseEvt.x = x;
+		gLastMouseEvt.y = y;
+
+		switch( gLastMouseEvt.button )
+		{
+			case GLUT_LEFT_BUTTON:
+			{
+				/* Rotation */
+				gCam.theta -= dx;
+				gCam.phi   -= dy;
+				if( gCam.phi >  89 ) gCam.phi =  89;
+				if( gCam.phi < -89 ) gCam.phi = -89;
+
+				 
+				gtf_FixedCameraPosition[0] = gCam.r*sin(deg2rad(gCam.theta))*cos(deg2rad(gCam.phi));
+				gtf_FixedCameraPosition[1] = gCam.r*sin(deg2rad(gCam.phi));
+				gtf_FixedCameraPosition[2] = gCam.r*cos(deg2rad(gCam.theta))*cos(deg2rad(gCam.phi));
+
+
+				break;
+			}
+			case GLUT_RIGHT_BUTTON:
+			{
+				/* Zoom in/out */
+				gCam.r += dx - dy;
+				if( gCam.r < 1 )	gCam.r = 1;
+
+				gtf_FixedCameraPosition[0] = gCam.r*sin(deg2rad(gCam.theta))*cos(deg2rad(gCam.phi));
+				gtf_FixedCameraPosition[1] = gCam.r*sin(deg2rad(gCam.phi));
+				gtf_FixedCameraPosition[2] = gCam.r*cos(deg2rad(gCam.theta))*cos(deg2rad(gCam.phi));
+
+				break;
+			}
+			default:
+				return;
+		}
+
+		setCamera(go_FrameTimer.GetLapTime());
+		//RenderScene(go_FrameTimer.GetLapTime()); // Move the camera.
+		//glutPostRedisplay();
+	}
 }
 
 float* UpdateCameraLookAt()
@@ -789,13 +850,20 @@ float* UpdateCameraPosition(float af_DeltaTime, float revolution)
 	float* pointer;
 	float info[3];
 
-	if (m_currentKey == 0)
+	/*if (m_currentKey == 0)
 	{
 		pointer = gtf_InitCameraPosition;
 	}
 	
+	
 	else
-	{
+	{	*/
+		/*gtf_FixedCameraPosition[0] = gtf_FixedCameraPosition[0]*sin(deg2rad(gCam.theta))*cos(deg2rad(gCam.phi));
+		gtf_FixedCameraPosition[1] = gtf_FixedCameraPosition[1]*sin(deg2rad(gCam.phi));
+		gtf_FixedCameraPosition[2] = gtf_FixedCameraPosition[2]*cos(deg2rad(gCam.theta))*cos(deg2rad(gCam.phi));*/
+
+
+
 		float X = gtf_FixedCameraPosition[0]+m_Bodies[m_currentKey].GetOrbitRadius();
 		float Z = gtf_FixedCameraPosition[2];
 
@@ -805,7 +873,7 @@ float* UpdateCameraPosition(float af_DeltaTime, float revolution)
 
 		pointer = info;
 
-	}
+	//}
 
 	return pointer;
 }
@@ -822,4 +890,14 @@ void SetcurrentKey(int key)
 int GetcurrentKey()
 {
 	return m_currentKey;
+}
+
+double deg2rad( double deg )
+{
+	return	0.01745329251994329547437168059786927187815 * deg;
+}
+
+double rad2deg( double rad )
+{
+	return	57.2957795130823228646477218717336654663085 * rad;
 }

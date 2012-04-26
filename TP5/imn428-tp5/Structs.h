@@ -21,13 +21,24 @@ struct Position
 	Position() : X(0), Y(0), Z(0) { }
 };
 
-typedef struct 
+typedef struct
 {
-	int button;
-	int buttonState;
-	int x;
-	int y;
+	int	button;  /* left, middle, right */
+	int stateButton; /* pressed or not */
+	int	x;
+	int	y;
 } MouseEvent;
+
+typedef struct
+{
+	GLfloat	theta;	/* angle de rotation sur le plane X/Z */
+	GLfloat	phi;	/* angle d'elevation du plan X/Z */
+	GLfloat	r;		/* distance d'eloignement */
+	GLfloat fovy;   /* angle d'ouverture */
+	GLfloat ratio;  /* ration hauteur/largeur de la fenetre courante */
+	GLfloat znear;   /* near clipping plane */
+	GLfloat zfar;    /* far clipping plane */
+} CamInfo;
 
 typedef struct
 {
