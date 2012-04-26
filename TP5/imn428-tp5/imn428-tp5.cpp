@@ -16,10 +16,11 @@
 #include "CelestialBody.h"
 #include "Structs.h"
 
-//Constant used throughout the example
+/******************** Constant used throughout the example *******************/ 
+
 #define PI							3.14159265358
 
-//Functions 
+/******************** Functions *******************/ 
 
 void		InitScene();
 void		CleanupScene();
@@ -46,10 +47,9 @@ float*		UpdateCameraPosition(float af_DeltaTime, float revolution);
 double		deg2rad( double deg );
 double		rad2deg( double rad );
 
-
 void		setCamera(float af_DeltaTime);
 
-// Variables 
+/******************** Variables *******************/  
 
 const int	gs32_WindowWidth	= 960;
 const int	gs32_WindowHeight	= 600;
@@ -102,6 +102,9 @@ boolean		m_Focus = true;
 MouseEvent	gLastMouseEvt;			
 CamInfo		gCam;
 
+
+/******************** Main/OpenGL Setup function *******************/ 
+
 void CreateSolarSystem()
 {
 	CelestialBody mercury(MERCURY_EQUATOR_RADIUS, MERCURY_ORBIT_RADIUS, MERCURY_REVO_PERIOD, MERCURY_ROTATION_PERIOD, "mercury", false);
@@ -148,6 +151,12 @@ int main(int argc, char** argv)
 	glutMainLoop();
 }
 
+/* 
+Function : InitScene
+Param : none
+Description : Init the scene ( Planet, texture, variable, OpenGL Enable)
+Return : void
+*/
 void InitScene()
 {
 	//Setup OpenGL's generic states.
@@ -235,6 +244,12 @@ void InitScene()
 
 }
 
+/* 
+Function : RenderScene
+Param : none
+Description : Change the current timer value.
+Return : void
+*/
 void IdleCallBack()
 {
 	go_FrameTimer.MarkLap();
@@ -247,40 +262,14 @@ void IdleCallBack()
 	}
 }
 
+/******************** Render function *******************/ 
 
-void setCamera(float af_DeltaTime)
-{
-	if(m_Focus==false)
-	{
-		float* tab=UpdateCameraLookAt();
-		gtf_CameraLookAt[0] = tab[0];
-		gtf_CameraLookAt[1] = tab[1];
-		gtf_CameraLookAt[2] = tab[2];
-
-	}
-	else
-	{
-		//To do : Faire la vu derrière la caméra. Donc x = Pos.X , y = Revolution de la planète, z = Pos.Z. 
-		//Il faut ajouter un cos/sin surêment pour faire tournée la caméra.
-		float* tab=UpdateCameraFocus();
-		gtf_CameraLookAt[0] = tab[0];
-		gtf_CameraLookAt[1] = tab[1];
-		gtf_CameraLookAt[2] = tab[2];
-
-		float* pos=UpdateCameraPosition(af_DeltaTime, tab[3]);
-		gtf_CameraPosition[0] = pos[0];
-		gtf_CameraPosition[1] = pos[1];
-		gtf_CameraPosition[2] = pos[2];
-
-
-	}
-
-	gluLookAt(	gtf_CameraPosition[0],	gtf_CameraPosition[1],	gtf_CameraPosition[2],
-				gtf_CameraLookAt[0],	gtf_CameraLookAt[1],	gtf_CameraLookAt[2],
-				gtf_CameraUp[0],		gtf_CameraUp[1],		gtf_CameraUp[2]);
-	
-}
-
+/* 
+Function : RenderScene
+Param : - af_DeltaTime : The current timer effect.
+Description : This function will render the scene ( Light, camera, planet, blue line )
+Return : void
+*/
 void RenderScene(float af_DeltaTime)
 {
 	glClearColor(0.0,0.0,0.0,1);
@@ -315,6 +304,187 @@ void RenderScene(float af_DeltaTime)
 	glutSwapBuffers();
 }
 
+/* 
+Function : RenderSpinningSphere
+Param : - af_DeltaTime : The current timer effect.
+		- i : The current planet selected.
+Description : This function will render the rotation and revolution of every planet.
+Return : void
+*/
+void RenderSpinningSphere(float af_DeltaTime, int i)
+{
+
+	if(i<10) m_Bodies[i].Update(af_DeltaTime, Position());
+	else m_Bodies[i].Update(af_DeltaTime, m_Bodies[3].GetPosition());
+
+	if(i==0)
+	{
+		RenderTransparentBillboard(af_DeltaTime);
+		glDisable(GL_LIGHTING);
+	}
+
+	glPushMatrix();
+
+		glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT,gtf_PlanetAmbient);
+		glMaterialfv(GL_FRONT_AND_BACK,GL_DIFFUSE,gtf_PlanetDiffuse);
+		glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,gtf_PlanetEmission);
+		glMaterialf(GL_FRONT_AND_BACK,GL_SHININESS,0);
+		glBindTexture(GL_TEXTURE_2D,gu32_PlanetTexId[i]);
+
+		glTranslatef( m_Bodies[i].GetPosition().X, m_Bodies[i].GetPosition().Y, m_Bodies[i].GetPosition().Z );
+		glRotatef( m_Bodies[i].GetRotationAngle() , 0, 1, 0);
+		glRotatef( 90,1,0,0);
+
+		GLUquadricObj *po_SphereMesh = gluNewQuadric();
+
+		gluQuadricDrawStyle(po_SphereMesh,GLU_FILL);
+		gluQuadricNormals(po_SphereMesh,GLU_SMOOTH);
+		gluQuadricTexture(po_SphereMesh,GLU_TRUE);
+		gluQuadricOrientation(po_SphereMesh,GLU_OUTSIDE);
+
+		gluSphere(po_SphereMesh,m_Bodies[i].GetRadius(),60,60);
+
+		gluDeleteQuadric(po_SphereMesh);
+
+	glPopMatrix();
+
+	if(m_Bodies[i].HasRing())
+	{	
+		if (i==ringSaturn.index) RenderRing(ringSaturn);
+		else RenderRing(ringUranus);
+	}
+
+	if(i==0)
+	{
+		glEnable(GL_LIGHTING);
+	}
+}
+
+
+/* 
+Function : RenderTransparentBillboard
+Param : - af_DeltaTime : The current timer effect.
+Description : This function set material attribute for the sun and effect.
+Return : void.
+*/
+void RenderTransparentBillboard(float af_DeltaTime)
+{
+	glDisable(GL_LIGHTING);
+	glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT,gtf_BillboardAmbient);
+	glMaterialfv(GL_FRONT_AND_BACK,GL_DIFFUSE,gtf_BillboardDiffuse);
+	glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,gtf_BillboardEmission);
+	glMaterialf(GL_FRONT_AND_BACK,GL_SHININESS,0);
+	glBindTexture(GL_TEXTURE_2D,gu32_BillboardTexId);
+
+	glDepthMask(GL_FALSE);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_ONE,GL_ONE);
+
+	glPushMatrix();
+
+		float f_TmpModelViewMat[16];
+		
+		glGetFloatv(GL_MODELVIEW_MATRIX,f_TmpModelViewMat);
+
+		f_TmpModelViewMat[0] = 1;
+		f_TmpModelViewMat[1] = 0;
+		f_TmpModelViewMat[2] = 0;
+
+		f_TmpModelViewMat[4] = 0;
+		f_TmpModelViewMat[5] = 1;
+		f_TmpModelViewMat[6] = 0;
+
+		f_TmpModelViewMat[8] = 0;
+		f_TmpModelViewMat[9] = 0;
+		f_TmpModelViewMat[10] = 1;
+
+		glLoadMatrixf(f_TmpModelViewMat);
+
+		glTranslatef(gtf_BillboardPosition[0],gtf_BillboardPosition[1],gtf_BillboardPosition[2]);
+
+		glBegin(GL_QUADS);
+
+			glTexCoord2d(0,0);
+			glVertex3f(-gf_BillboardHalfSize,-gf_BillboardHalfSize,0);
+
+			glTexCoord2d(1,0);
+			glVertex3f(gf_BillboardHalfSize,-gf_BillboardHalfSize,0);
+
+			glTexCoord2d(1,1);
+			glVertex3f(gf_BillboardHalfSize,gf_BillboardHalfSize,0);
+
+			glTexCoord2d(0,1);
+			glVertex3f(-gf_BillboardHalfSize,gf_BillboardHalfSize,0);
+
+		glEnd();
+
+	glPopMatrix();
+
+	glDisable(GL_BLEND);
+	glDepthMask(GL_TRUE);
+	glEnable(GL_LIGHTING);
+}
+
+/* 
+Function : RenderRing
+Param : - planetRing : The attribute of a ring.
+Description : This function assign ring to planet.
+Return : void
+*/
+
+void RenderRing(Ring planetRing)
+{
+	glDisable(GL_LIGHTING);
+	glPushMatrix();
+
+	glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT,gtf_BillboardAmbient);
+	glMaterialfv(GL_FRONT_AND_BACK,GL_DIFFUSE,gtf_BillboardDiffuse);
+	glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,gtf_BillboardEmission);
+	glMaterialf(GL_FRONT_AND_BACK,GL_SHININESS,0);
+	
+	glDepthMask(GL_FALSE);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_ONE,GL_ONE);
+
+		glRotatef( m_Bodies[planetRing.index].GetRevolutionAngle()*180/PI , 0, 1, 0);
+		glTranslatef(m_Bodies[planetRing.index].GetOrbitRadius(), 0, 0);
+		glRotatef( planetRing.angle , 0, 0, 1);
+
+
+		float resolution = 30;
+		for(int j = 0; j < resolution; j++)
+		{
+			glBindTexture(GL_TEXTURE_2D,planetRing.ringId);
+			glBegin(GL_QUADS);
+			{
+
+				glTexCoord2f(0.0f, 1.0f); glVertex3f(planetRing.innerRadius*cos(((float)2*PI/resolution)*j), 0, planetRing.innerRadius*sin(((float)2*PI/resolution)*j));
+				glTexCoord2f(1.0f, 1.0f);glVertex3f(planetRing.outerRadius*cos(((float)2*PI/resolution)*j), 0, planetRing.outerRadius*sin(((float)2*PI/resolution)*j));
+				glTexCoord2f(1.0f, 0.0f);glVertex3f(planetRing.outerRadius*cos(((float)2*PI/resolution)*(j+1)), 0, planetRing.outerRadius*sin(((float)2*PI/resolution)*(j+1)));
+				glTexCoord2f(0.0f, 0.0f);glVertex3f(planetRing.innerRadius*cos(((float)2*PI/resolution)*(j+1)), 0, planetRing.innerRadius*sin(((float)2*PI/resolution)*(j+1)));
+			}
+			glEnd();
+		}
+
+	glDisable (GL_BLEND);
+	glDepthMask(GL_TRUE);
+
+	glPopMatrix();
+	glEnable(GL_LIGHTING);
+}
+
+
+/* 
+Function : Draw_Skybox
+Param : - x : the position in x for to center the skybox
+		- y : the position in y for to center the skybox
+		- z : the position in z for to center the skybox
+		- width : the size of the square on "x" axis.
+		- height : the size of the square on "y" axis.
+		- length : the size of the square on "z" axis.
+Description : This function create the box around the Solar system to show the star around.
+Return : void
+*/
 void Draw_Skybox(float x, float y, float z, float width, float height, float length)
 {
 	// Center the Skybox around the given x,y,z position
@@ -392,161 +562,11 @@ void Draw_Skybox(float x, float y, float z, float width, float height, float len
 	glEnable(GL_LIGHTING);
 }
 
-void RenderSpinningSphere(float af_DeltaTime, int i)
-{
-
-	if(i<10) m_Bodies[i].Update(af_DeltaTime, Position());
-	else m_Bodies[i].Update(af_DeltaTime, m_Bodies[3].GetPosition());
-
-	if(i==0)
-	{
-		RenderTransparentBillboard(af_DeltaTime);
-		glDisable(GL_LIGHTING);
-	}
-
-	glPushMatrix();
-
-		glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT,gtf_PlanetAmbient);
-		glMaterialfv(GL_FRONT_AND_BACK,GL_DIFFUSE,gtf_PlanetDiffuse);
-		glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,gtf_PlanetEmission);
-		glMaterialf(GL_FRONT_AND_BACK,GL_SHININESS,0);
-		glBindTexture(GL_TEXTURE_2D,gu32_PlanetTexId[i]);
-
-		glTranslatef( m_Bodies[i].GetPosition().X, m_Bodies[i].GetPosition().Y, m_Bodies[i].GetPosition().Z );
-		glRotatef( m_Bodies[i].GetRotationAngle() , 0, 1, 0);
-		glRotatef( 90,1,0,0);
-
-		GLUquadricObj *po_SphereMesh = gluNewQuadric();
-
-		gluQuadricDrawStyle(po_SphereMesh,GLU_FILL);
-		gluQuadricNormals(po_SphereMesh,GLU_SMOOTH);
-		gluQuadricTexture(po_SphereMesh,GLU_TRUE);
-		gluQuadricOrientation(po_SphereMesh,GLU_OUTSIDE);
-
-		gluSphere(po_SphereMesh,m_Bodies[i].GetRadius(),60,60);
-
-		gluDeleteQuadric(po_SphereMesh);
-
-	glPopMatrix();
-
-	if(m_Bodies[i].HasRing())
-	{	
-		if (i==ringSaturn.index) RenderRing(ringSaturn);
-		else RenderRing(ringUranus);
-	}
-
-	if(i==0)
-	{
-		glEnable(GL_LIGHTING);
-	}
-}
-
-
-void RenderTransparentBillboard(float af_DeltaTime)
-{
-	glDisable(GL_LIGHTING);
-	glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT,gtf_BillboardAmbient);
-	glMaterialfv(GL_FRONT_AND_BACK,GL_DIFFUSE,gtf_BillboardDiffuse);
-	glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,gtf_BillboardEmission);
-	glMaterialf(GL_FRONT_AND_BACK,GL_SHININESS,0);
-	glBindTexture(GL_TEXTURE_2D,gu32_BillboardTexId);
-
-	glDepthMask(GL_FALSE);
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_ONE,GL_ONE);
-
-	glPushMatrix();
-
-		float f_TmpModelViewMat[16];
-		
-		glGetFloatv(GL_MODELVIEW_MATRIX,f_TmpModelViewMat);
-
-		f_TmpModelViewMat[0] = 1;
-		f_TmpModelViewMat[1] = 0;
-		f_TmpModelViewMat[2] = 0;
-
-		f_TmpModelViewMat[4] = 0;
-		f_TmpModelViewMat[5] = 1;
-		f_TmpModelViewMat[6] = 0;
-
-		f_TmpModelViewMat[8] = 0;
-		f_TmpModelViewMat[9] = 0;
-		f_TmpModelViewMat[10] = 1;
-
-		glLoadMatrixf(f_TmpModelViewMat);
-
-		glTranslatef(gtf_BillboardPosition[0],gtf_BillboardPosition[1],gtf_BillboardPosition[2]);
-
-		glBegin(GL_QUADS);
-
-			glTexCoord2d(0,0);
-			glVertex3f(-gf_BillboardHalfSize,-gf_BillboardHalfSize,0);
-
-			glTexCoord2d(1,0);
-			glVertex3f(gf_BillboardHalfSize,-gf_BillboardHalfSize,0);
-
-			glTexCoord2d(1,1);
-			glVertex3f(gf_BillboardHalfSize,gf_BillboardHalfSize,0);
-
-			glTexCoord2d(0,1);
-			glVertex3f(-gf_BillboardHalfSize,gf_BillboardHalfSize,0);
-
-		glEnd();
-
-	glPopMatrix();
-
-	glDisable(GL_BLEND);
-	glDepthMask(GL_TRUE);
-	glEnable(GL_LIGHTING);
-}
-
-//TO DO faire en sorte que l'anneau d'Uranus suive la tangente de son orbite
-void RenderRing(Ring planetRing)
-{
-	glDisable(GL_LIGHTING);
-	glPushMatrix();
-
-	glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT,gtf_BillboardAmbient);
-	glMaterialfv(GL_FRONT_AND_BACK,GL_DIFFUSE,gtf_BillboardDiffuse);
-	glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,gtf_BillboardEmission);
-	glMaterialf(GL_FRONT_AND_BACK,GL_SHININESS,0);
-	
-	glDepthMask(GL_FALSE);
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_ONE,GL_ONE);
-
-		glRotatef( m_Bodies[planetRing.index].GetRevolutionAngle()*180/PI , 0, 1, 0);
-		glTranslatef(m_Bodies[planetRing.index].GetOrbitRadius(), 0, 0);
-		glRotatef( planetRing.angle , 0, 0, 1);
-
-
-		float resolution = 30;
-		for(int j = 0; j < resolution; j++)
-		{
-			glBindTexture(GL_TEXTURE_2D,planetRing.ringId);
-			glBegin(GL_QUADS);
-			{
-
-				glTexCoord2f(0.0f, 1.0f); glVertex3f(planetRing.innerRadius*cos(((float)2*PI/resolution)*j), 0, planetRing.innerRadius*sin(((float)2*PI/resolution)*j));
-				glTexCoord2f(1.0f, 1.0f);glVertex3f(planetRing.outerRadius*cos(((float)2*PI/resolution)*j), 0, planetRing.outerRadius*sin(((float)2*PI/resolution)*j));
-				glTexCoord2f(1.0f, 0.0f);glVertex3f(planetRing.outerRadius*cos(((float)2*PI/resolution)*(j+1)), 0, planetRing.outerRadius*sin(((float)2*PI/resolution)*(j+1)));
-				glTexCoord2f(0.0f, 0.0f);glVertex3f(planetRing.innerRadius*cos(((float)2*PI/resolution)*(j+1)), 0, planetRing.innerRadius*sin(((float)2*PI/resolution)*(j+1)));
-			}
-			glEnd();
-		}
-
-	glDisable (GL_BLEND);
-	glDepthMask(GL_TRUE);
-
-	glPopMatrix();
-	glEnable(GL_LIGHTING);
-}
-
-/* Camera Function */ 
+/******************** KeyBoard/Mouse function associated with GLUT. *******************/ 
 
 void KeyboardFunc(unsigned char key, int x, int y)
 {
-	
+//Look number 0 to 9. If first time pressed, the camera will focus on the planet and if second time, the camera will stay on his position and follow the planet.
 switch (key)
   {
 	case '0':  
@@ -745,8 +765,6 @@ void MouseClickFunc(int button, int state, int x, int y)
 	}
 }
 
-
-
 void MouseMoveFunc(int x, int y)
 {
 	if(m_Focus == true)
@@ -780,6 +798,7 @@ void MouseMoveFunc(int x, int y)
 				/* Zoom in/out */
 				gCam.r += dx - dy;
 				if( gCam.r < 1 )	gCam.r = 1;
+				if( gCam.r > 100.0 )	gCam.r = 100.0;
 
 				gtf_FixedCameraPosition[0] = gCam.r*sin(deg2rad(gCam.theta))*cos(deg2rad(gCam.phi));
 				gtf_FixedCameraPosition[1] = gCam.r*sin(deg2rad(gCam.phi));
@@ -790,36 +809,54 @@ void MouseMoveFunc(int x, int y)
 			default:
 				return;
 		}
-
 		setCamera(go_FrameTimer.GetLapTime());
-		//RenderScene(go_FrameTimer.GetLapTime()); // Move the camera.
-		//glutPostRedisplay();
 	}
 }
 
-float* UpdateCameraLookAt()
+/******************** Camera settings function *******************/ 
+
+
+/* 
+Function : setCamera
+Param : - af_DeltaTime : The current timer effect.
+Description : This function place the camera in the solar system and use the gluLookAt function to set the params.
+Return : void
+*/
+void setCamera(float af_DeltaTime)
 {
-	float* pointer;
-	float info[3];
-
-	pointer = info;
-
-	if (m_currentKey == 0)
+	if(m_Focus==false)
 	{
-		info[0] = 0; 
-		info[1] = 0; 
-		info[2] = 0; 
+		float* tab=UpdateCameraFocus();
+		gtf_CameraLookAt[0] = tab[0];
+		gtf_CameraLookAt[1] = tab[1];
+		gtf_CameraLookAt[2] = tab[2];
+
 	}
 	else
 	{
-		info[0] = m_Bodies[m_currentKey].GetPosition().X; 
-		info[1] = m_Bodies[m_currentKey].GetPosition().Y;
-		info[2] = m_Bodies[m_currentKey].GetPosition().Z; 
+		float* tab=UpdateCameraFocus();
+		gtf_CameraLookAt[0] = tab[0];
+		gtf_CameraLookAt[1] = tab[1];
+		gtf_CameraLookAt[2] = tab[2];
+
+		float* pos=UpdateCameraPosition(af_DeltaTime, tab[3]);
+		gtf_CameraPosition[0] = pos[0];
+		gtf_CameraPosition[1] = pos[1];
+		gtf_CameraPosition[2] = pos[2];
 	}
 
-	return pointer;
+	gluLookAt(	gtf_CameraPosition[0],	gtf_CameraPosition[1],	gtf_CameraPosition[2],
+				gtf_CameraLookAt[0],	gtf_CameraLookAt[1],	gtf_CameraLookAt[2],
+				gtf_CameraUp[0],		gtf_CameraUp[1],		gtf_CameraUp[2]);
+	
 }
 
+/* 
+Function : UpdateCameraFocus
+Param : None
+Description : This function depend of the current pushed Keyboard number and set the focus to this planet.
+Return : Return tab of float with (x,y,z,Revolution) value of the camera focus.
+*/
 float* UpdateCameraFocus()
 {
 	float* pointer;
@@ -845,23 +882,17 @@ float* UpdateCameraFocus()
 	return pointer;
 }
 
+/* 
+Function : UpdateCameraPosition
+Param : - af_DeltaTime : The current timer effect.
+		- revolution : The revolution of the current planet associated with the pushed Keyboard number
+Description : This function depend of the current planet associated with the pushed Keyboard number and i'll compute the camera position on the planet and with the mouse param change on mouseMoveFunc.
+Return : Return tab of float with (x,y,z) value of the camera.
+*/
 float* UpdateCameraPosition(float af_DeltaTime, float revolution)
 {
 	float* pointer;
 	float info[3];
-
-	if (m_currentKey == 0)
-	{
-		pointer = gtf_FixedCameraPosition;
-	}
-	
-	
-	else
-	{	
-		/*gtf_FixedCameraPosition[0] = gtf_FixedCameraPosition[0]*sin(deg2rad(gCam.theta))*cos(deg2rad(gCam.phi));
-		gtf_FixedCameraPosition[1] = gtf_FixedCameraPosition[1]*sin(deg2rad(gCam.phi));
-		gtf_FixedCameraPosition[2] = gtf_FixedCameraPosition[2]*cos(deg2rad(gCam.theta))*cos(deg2rad(gCam.phi));*/
-
 
 
 		float X = gtf_FixedCameraPosition[0]+m_Bodies[m_currentKey].GetOrbitRadius();
@@ -873,14 +904,10 @@ float* UpdateCameraPosition(float af_DeltaTime, float revolution)
 
 		pointer = info;
 
-	}
-
 	return pointer;
 }
 
-/* Get/Set function */
-
-
+/******************* Get/Set function *******************/
 
 void SetcurrentKey(int key)
 {
@@ -891,6 +918,9 @@ int GetcurrentKey()
 {
 	return m_currentKey;
 }
+
+
+/******************* Math Function *******************/
 
 double deg2rad( double deg )
 {
