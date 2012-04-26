@@ -850,14 +850,14 @@ float* UpdateCameraPosition(float af_DeltaTime, float revolution)
 	float* pointer;
 	float info[3];
 
-	/*if (m_currentKey == 0)
+	if (m_currentKey == 0)
 	{
-		pointer = gtf_InitCameraPosition;
+		pointer = gtf_FixedCameraPosition;
 	}
 	
 	
 	else
-	{	*/
+	{	
 		/*gtf_FixedCameraPosition[0] = gtf_FixedCameraPosition[0]*sin(deg2rad(gCam.theta))*cos(deg2rad(gCam.phi));
 		gtf_FixedCameraPosition[1] = gtf_FixedCameraPosition[1]*sin(deg2rad(gCam.phi));
 		gtf_FixedCameraPosition[2] = gtf_FixedCameraPosition[2]*cos(deg2rad(gCam.theta))*cos(deg2rad(gCam.phi));*/
@@ -873,7 +873,7 @@ float* UpdateCameraPosition(float af_DeltaTime, float revolution)
 
 		pointer = info;
 
-	//}
+	}
 
 	return pointer;
 }
