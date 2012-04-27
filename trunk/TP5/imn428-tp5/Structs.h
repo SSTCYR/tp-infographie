@@ -12,6 +12,7 @@
 	#include "Glut/GLUT.h"
 #endif
 
+// Define a position in cartesian coordinates
 struct Position
 {
 	double X;
@@ -21,6 +22,7 @@ struct Position
 	Position() : X(0), Y(0), Z(0) { }
 };
 
+// Define a mouse event event, be it a click or a movement
 typedef struct
 {
 	int	button;  /* left, middle, right */
@@ -29,6 +31,7 @@ typedef struct
 	int	y;
 } MouseEvent;
 
+// Define the data needed to represent a camera
 typedef struct
 {
 	GLfloat	theta;	/* angle de rotation sur le plane X/Z */
@@ -40,6 +43,7 @@ typedef struct
 	GLfloat zfar;    /* far clipping plane */
 } CamInfo;
 
+// Define the data needed to represent a light
 typedef struct
 {
 	GLenum	lightID;
@@ -56,6 +60,7 @@ typedef struct
 
 } Light;
 
+// Define the data needed to represent a ring
 struct Ring
 {
 	float			innerRadius;

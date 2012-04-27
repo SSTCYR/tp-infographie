@@ -11,7 +11,6 @@
 
 #define PI							3.14159265358
 
-#include <string>
 #include "CelestialBody.h"
 #include "BitmapHandling.h"
 #include <cmath>
@@ -25,10 +24,22 @@ float y;
 
 CIRCLE circle;
 
+/* 
+Function : CelestialBody
+Param : none
+Description : Default constructor
+Return : none
+*/
 CelestialBody::CelestialBody()
 {
 }
 
+/* 
+Function : CelestialBody
+Param : none
+Description : Parametric constructor
+Return : none
+*/
 CelestialBody::CelestialBody(float radius,	float orbitRadius, float revolution, float rotation, char *planetName, bool hasRing)
 {
 	m_Radius = radius*MULTIPLIER_EQUAT_RAD;
@@ -46,12 +57,23 @@ CelestialBody::CelestialBody(float radius,	float orbitRadius, float revolution, 
 	m_HasRing = hasRing;
 }
 
+/* 
+Function : ~CelestialBody
+Param : none
+Description : Destructor
+Return : none
+*/
 CelestialBody::~CelestialBody()
 {
 }
 
-
-// TODO : Draw satellite when needed
+/* 
+Function : Update
+Param : - elapsedTime : Time that has passed since the last update.
+        - centerOfRevolution : Position of the center of revolution of the planet
+Description : Update the position of the planet at each new mesure of time
+Return : void
+*/
 void CelestialBody::Update(float elapsedTime, Position centerOfRevolution)
 {
 	m_RevolutionTime += elapsedTime;
@@ -79,6 +101,12 @@ void CelestialBody::Update(float elapsedTime, Position centerOfRevolution)
 	m_RotationAngle = (float)m_RotationTime / m_Rotation * 360.0*3;
 }
 
+/* 
+Function : DrawOrbit
+Param : - centerOfRevolution : Position of the center of revolution of the planet
+Description : Draw the orbit of the planet
+Return : void
+*/
 void CelestialBody::DrawOrbit(Position centerOfRevolution)
 {
 	glDisable(GL_LIGHTING);
@@ -101,7 +129,7 @@ void CelestialBody::DrawOrbit(Position centerOfRevolution)
 	glColor3f(1.0,1.0,1.0);
 }
 
-
+/******************** Accessors *******************/ 
 Position CelestialBody::GetPosition() const
 {
 	return m_Position;
