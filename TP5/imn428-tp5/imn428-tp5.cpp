@@ -1,3 +1,12 @@
+/*
+ IMN 428 : Infographie
+
+ Nom1: Félix-Antoine Ouellet 09 137 551
+ Nom2: Jean-Philippe Ouellet 11 057 955
+ Nom3: Alexandre Bizeau      11 109 837
+ Nom4: Francois Rheault      11 040 348
+*/
+
 #ifdef _WIN32
 #include <windows.h>
 #include <GL/gl.h>
@@ -131,6 +140,7 @@ void CreateSolarSystem()
 	m_Bodies[0] = sun;
 }
 
+/******************** Entry point for the program *******************/ 
 int main(int argc, char** argv)
 {
 	glutInit(&argc,argv);
@@ -566,7 +576,8 @@ void Draw_Skybox(float x, float y, float z, float width, float height, float len
 
 void KeyboardFunc(unsigned char key, int x, int y)
 {
-//Look number 0 to 9. If first time pressed, the camera will focus on the planet and if second time, the camera will stay on his position and follow the planet.
+// Look number 0 to 9. If first time pressed, the camera will focus on the planet and if second time, 
+// the camera will stay on his position and follow the planet.
 switch (key)
   {
 	case '0':  
@@ -745,9 +756,19 @@ switch (key)
   
 }
 
+/* 
+Function : MouseClickFunc
+Param : - button : the mouse button pressed
+        - state : the change in the state of the button (up  or down)
+        - x : the position in x of the cursor
+		- y : the position in y of the cursor
+Description : This function handle the mouse click event by setting the last mouse event to up or
+              down depending on what it captured
+Return : void
+*/
 void MouseClickFunc(int button, int state, int x, int y)
 {
-	if(m_Focus == true)
+	if(m_Focus)
 	{
 		if( state == GLUT_DOWN )
 		{
@@ -765,13 +786,21 @@ void MouseClickFunc(int button, int state, int x, int y)
 	}
 }
 
+/* 
+Function : MouseMoveFunc
+Param : - x : the position in x of the cursor
+		- y : the position in y of the cursor
+Description : This function handle the change in the camera following a mouse move event. If the left button
+              is pressed when the mouse move, the camera will rotate. If the right button is pressed, the 
+			  camera will zoom in or out depending of the direction of the movement.
+Return : void
+*/
 void MouseMoveFunc(int x, int y)
 {
-	if(m_Focus == true)
+	if(m_Focus)
 	{
 		int	dx = x - gLastMouseEvt.x;
 		int	dy = -y + gLastMouseEvt.y;
-		float m[16];
 		gLastMouseEvt.x = x;
 		gLastMouseEvt.y = y;
 
